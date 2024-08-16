@@ -1,0 +1,52 @@
+.bg {
+    background-color: #d9d9d9;
+    height: 100%; /* Устанавливаем высоту на 100% высоты экрана */
+    margin: 0;
+    padding: 0;
+    width: 100%;  /* Устанавливаем ширину на 100% ширины экрана */
+    display: flex;
+    flex-direction: column; /* Добавлено для вертикальной ориентации */
+    align-items: center;  /* Центрируем контент по вертикали */
+}
+
+.topbar {
+    position: absolute;
+    width: 100%;
+    height: 8%;
+    background-color: #658199;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center; /* Центрируем контент по вертикали */
+    justify-content: center; /* Центрируем текст в центре topbar */
+    z-index: 10; /* Устанавливаем z-index для topbar */
+}
+
+.content1 {
+    position: absolute;
+    width: 100%;
+    height: 92%;
+    overflow-x: hidden; /* Allow horizontal scrolling */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow-y: auto; /* Hide vertical scrollbar */
+    white-space: nowrap;
+    background-color: #D9D9D9;
+    top: 8%;
+    left: 0;
+}
+
+.groupImage {
+    margin-left: 0.5em;
+    position: absolute;
+    left: 0.5em;
+    cursor: pointer;
+}
+
+.title1 {
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+    font-size: 4vh;
+    font-weight: 600;
+    margin: 0 auto; /* Центрируем текст */
+}

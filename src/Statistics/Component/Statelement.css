@@ -1,0 +1,108 @@
+.rectangle1 {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 7%;
+    background-color: #FFFFFF;
+    padding-right: 10px;
+    box-sizing: border-box;
+    border: 1px dotted #32404D;
+    border-radius: 10px;
+}
+
+.left-box1 {
+    color: #F9F9F9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+    border-radius: 10px;
+    height: 6vh;
+    width: 6vh;
+    box-sizing: border-box;
+}
+
+.number1 {
+    font-size: 1.5em;
+}
+
+.text-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-grow: 1;
+    margin-left: 1.5vh;
+    position: relative; /* Позволяет использовать абсолютное позиционирование для дочерних элементов */
+}
+
+.text1 {
+    text-align: left;
+    color: #32404D;
+    font-size: 1.7vh;
+    font-weight: 500;
+    position: relative; /* Для использования абсолютного позиционирования */
+}
+
+.text1-name {
+    flex-grow: 1;
+    overflow: hidden; /* Обрезка текста, если он выходит за пределы контейнера */
+    text-overflow: ellipsis; /* Добавление троеточия при переполнении */
+    white-space: nowrap; /* Запрет переноса текста на новую строку */
+    max-width: calc(72%); /* Ограничение ширины для избежания наложения */
+}
+
+.text1-pts {
+    position: absolute; /* Независимое позиционирование */
+    left: 72%; /* Позиционирование относительно правого края контейнера */
+}
+
+.text1-f {
+    position: absolute; /* Независимое позиционирование */
+    right: 1vh; /* Позиционирование еще правее */
+}
+
+.circle1, .circle-placeholder {
+    width: 4vh;
+    height: 4vh;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    position: relative;
+}
+
+.triangle1 {
+    width: 0;
+    height: 0;
+    border-left: 1.3vh solid #FFFFFF;
+    border-top: 0.8vh solid transparent;
+    border-bottom: 0.8vh solid transparent;
+    left: 37%;
+    position: absolute;
+}
+
+/* Стили для состояний */
+
+.rectangle1.active .text1 {
+    color: #FFFFFF; /* Белый цвет текста */
+    font-size: 2.2vh; /* Увеличенный размер шрифта */
+}
+
+.rectangle1.active {
+    background-color: #658199;
+}
+
+.rectangle1.completed .left-box1 {
+    background-color: #32404D;
+}
+
+.rectangle1.active .left-box1 {
+    background-color: #EA5558;
+    color: #FFFFFF;
+}
+
+.rectangle1.inactive .left-box1 {
+    background-color: #999999;
+}
