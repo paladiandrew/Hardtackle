@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Statelement from './Component/Statelement';
 import './Statistics.css';
 
-const server_url = "https://paladiandrew-hardtackle-server-638d.twc1.net/";
+const server_url = "https://paladiandrew-hardtackle-server-638d.twc1.net";
 
 
 const Statistics = () => {
