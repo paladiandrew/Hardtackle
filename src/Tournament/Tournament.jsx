@@ -8,7 +8,6 @@ const server_url = "https://paladiandrew-hardtackle-server-638d.twc1.net:8443";
 
 
 const socket = io(`${server_url}`, {
-    transports: ['websocket', 'polling'],
     secure: true,
     path: '/socket.io/',
   });
