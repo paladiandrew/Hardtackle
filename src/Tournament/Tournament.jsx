@@ -4,7 +4,7 @@ import vectorImage from './images/Vector.png';
 import {io} from 'socket.io-client';
 import './Tournament.css';
 
-const server_url = process.env.REACT_APP_API_URL;
+const server_url = "https://paladiandrew-hardtackle-server-638d.twc1.net/";
 
 
 const socket = io(`${server_url}`, {
