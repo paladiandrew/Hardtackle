@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MainScreen.css";
 
-const server_url = "https://paladiandrew-hardtackle-server-638d.twc1.net";
+const server_url = process.env.REACT_APP_API_URL;
 
 export default function MainScreen() {
     const navigate = useNavigate();
