@@ -239,7 +239,7 @@ const Tournament = () => {
                             }`}
                             onClick={() => handleCircleClick(circle)}
                         >
-                            <span>{circle.number}</span>
+                            <span>{circle.index_circle}</span>
                             <span>
                                 {circle.playerGame.fishCount}:{circle.opponentGame.fishCount}
                             </span>
