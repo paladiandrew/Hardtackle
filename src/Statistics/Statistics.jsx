@@ -70,27 +70,29 @@ const Statistics = () => {
   
     const matchedUser = users.find(user => user.code === code);
     if (matchedUser) {
-      matchedUser.circles.forEach(circle => {
-        const index = elements.findIndex(element => element.textNumber === circle.opponentGame.number);
-        if (circle.status === "active"){
-            setStage(circle.number);
-        }
-  
-        if (index !== -1) {
-          elements[index].showCircle = true;
-  
-          if (circle.status === "completed") {
-            elements[index].circleColor = "#32404D";
-          } else if (circle.status === "inactive") {
-            elements[index].circleColor = "#CCCCCC";
-          } else if (circle.status === "active") {
-            elements[index].circleColor = "#EA5558";
+        for (let i = matchedUser.circles.length - 1; i >= 0; i--) {
+            const circle = matchedUser.circles[i];
+            const index = elements.findIndex(element => element.textNumber === circle.opponentGame.number);
+          
+            if (circle.status === "active") {
+              setStage(circle.number);
+            }
+          
+            if (index !== -1) {
+              elements[index].showCircle = true;
+          
+              if (circle.status === "completed") {
+                elements[index].circleColor = "#32404D";
+              } else if (circle.status === "inactive") {
+                elements[index].circleColor = "#CCCCCC";
+              } else if (circle.status === "active") {
+                elements[index].circleColor = "#EA5558";
+              }
+              if (circle.second_circle === false) {
+                elements[index].activeCircle = circle.number;
+              }
+            }
           }
-          if(circle.second_circle === false) {
-            elements[index].activeCircle = circle.number;
-          }
-        }
-      });
     }
     if (stage === 0) setStage(allStages);
     setcountStages(allStages);
