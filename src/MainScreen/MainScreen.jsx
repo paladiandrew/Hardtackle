@@ -28,22 +28,22 @@ export default function MainScreen() {
                 if (response.ok) {
                     navigate(`/tournament/${pinCode}`);
                 } else if (response.status === 404) {
-                    setErrorMessage("Код не найден. Пожалуйста, попробуйте снова.");
+                    setErrorMessage("Incorrect password. Please try again.");
                 } else {
-                    setErrorMessage("Произошла ошибка. Пожалуйста, попробуйте снова.");
+                    setErrorMessage("An error occurred. Please try again.");
                 }
             } catch (error) {
-                setErrorMessage("Код не найден. Пожалуйста, попробуйте снова.");
+                setErrorMessage("Incorrect password. Please try again.");
             }
         } else {
-            setErrorMessage("Пожалуйста, введите код");
+            setErrorMessage("Please enter a password.");
         }
     };
     return (
         <div className="content" style={{ backgroundImage: `url(${photoUrl})` }}>
-            <div className="title">TROUT CUP</div>
-            <div className="dates">24-25</div>
-            <div className="stage">1 stage 24-25</div>
+            <div className="title"></div>
+            <div className="dates"></div>
+            <div className="stage"></div>
             <div className="enter-number">
                 <input
                     type="text"
