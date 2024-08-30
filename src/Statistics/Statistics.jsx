@@ -42,9 +42,13 @@ const Statistics = () => {
             activeCircle: -1,
             code: code,
         }));
+        if (code) {
           const { processedElements, matchedUser } = processElements(elements, data, code);
           setElements(processedElements);
-
+        } else {
+            const { processedElements, matchedUser } = processElements(elements, data, "-1");
+          setElements(processedElements);
+        }
       } catch (error) {
         console.error('Fetch error:', error);
       }
