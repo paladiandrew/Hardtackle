@@ -97,9 +97,9 @@ const Tournament = () => {
                     ...prevUserData,
                     circles: updatedCircles,
                 }));
-                const newActiveCircle = updatedCircles.find(circle => circle.number === activeCircleNumber);
+                const newActiveCircle = updatedCircles.find(circle => circle.number === activeCircle.number);
                 setActiveCircle(newActiveCircle);
-                setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
+                setPlayerScoreInput(newActiveCircle.playerGame.fishCount)
                 }
             }
         };
