@@ -73,6 +73,7 @@ const Tournament = () => {
                 setPlayerScoreInput(updatedCircle.playerGame.fishCount);
             } else if (userData) {
                 const currUpdatedActiveCircle = updatedUserData.circles.find(circle => circle.number === activeCircleNumber && circle.opponentGame.number === userData.player_id && circle.status === 'active');
+
                 if (currUpdatedActiveCircle){
                 const updatedCircles = userData.circles.map(circle => {
                     const updatedCircle = updatedUserData.circles.find(c => c.status === "active" && c.opponentGame.number === circle.playerGame.number && circle.opponentGame.number === c.playerGame.number && circle.status === 'active');
@@ -97,7 +98,7 @@ const Tournament = () => {
                     ...prevUserData,
                     circles: updatedCircles,
                 }));
-                const newActiveCircle = updatedCircles.find(circle => circle.number === activeCircle.number);
+                const newActiveCircle = updatedCircles.find(circle => currUpdatedActiveCircle.opponentGame.number === userData.player_id && circle.status === 'active');
                 setActiveCircle(newActiveCircle);
                 setPlayerScoreInput(newActiveCircle.playerGame.fishCount)
                 }
