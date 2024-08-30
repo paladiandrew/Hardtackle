@@ -93,8 +93,8 @@ const Statistics = () => {
     }
     if (stage === 0) setStage(allStages);
     setcountStages(allStages);
-    const index = elements.findIndex(element => element.textNumber === matchedUser.player_id);
     if (matchedUser) {
+        const index = elements.findIndex(element => element.textNumber === matchedUser.player_id);
         elements[index].state = "active";
     }
     elements.forEach((element, i) => {
