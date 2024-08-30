@@ -42,13 +42,9 @@ const Statistics = () => {
             activeCircle: -1,
             code: code,
         }));
-        if (code) {
           const { processedElements, matchedUser } = processElements(elements, data, code);
           setElements(processedElements);
-        } else {
-            const { processedElements, matchedUser } = processElements(elements, data, "-1");
-          setElements(processedElements);
-        }
+
       } catch (error) {
         console.error('Fetch error:', error);
       }
@@ -77,9 +73,8 @@ const Statistics = () => {
         for (let i = matchedUser.circles.length - 1; i >= 0; i--) {
             const circle = matchedUser.circles[i];
             const index = elements.findIndex(element => element.textNumber === circle.opponentGame.number);
-          
             if (circle.status === "active") {
-              setStage(circle.number);
+              setStage(circle.index_circle);
             }
           
             if (index !== -1) {
@@ -92,9 +87,7 @@ const Statistics = () => {
               } else if (circle.status === "active") {
                 elements[index].circleColor = "#EA5558";
               }
-              if (circle.second_circle === false) {
                 elements[index].activeCircle = circle.number;
-              }
             }
           }
     }
