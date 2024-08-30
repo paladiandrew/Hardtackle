@@ -99,7 +99,7 @@ const Tournament = () => {
                     ...prevUserData,
                     circles: updatedCircles,
                 }));
-                const newActiveCircle = updatedCircles.find(circle => circle.opponentGame.number === currUpdatedActiveCircle.playerGame.number && circle.playerGame.number === currUpdatedActiveCircle.opponentGame.number && circle.status === "active");
+                const newActiveCircle = updatedCircles.find(circle => circle.opponentGame.number === currUpdatedActiveCircle.playerGame.number && circle.playerGame.number === currUpdatedActiveCircle.opponentGame.number && circle.status === 'active');
                 setActiveCircle(newActiveCircle);
                 setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
                 }
