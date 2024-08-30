@@ -15,6 +15,7 @@ const Statistics = () => {
   const { code } = useParams();
   const navigate = useNavigate();
   const [stage, setStage] = useState(0);
+  const [watch, setWatch] = useState(true);
   const [countStages, setcountStages] = useState(0);
   const [elements, setElements] = useState(elements1)
   const navigateToTournament = () => {
@@ -64,6 +65,13 @@ const Statistics = () => {
       }
     });
     const allStages = Math.min(...users.map((user) => user.circles.length));
+    const minActiveCircleIndex = Math.min(...users.flatMap(user => 
+        user.circles
+          .filter(circle => circle.status === "active")
+          .map(circle => circle.index_circle)
+      ) || [allStages]);
+    setStage(minActiveCircleIndex);
+    setcountStages(allStages);
     elements.slice(0, 4).forEach(element => {
       element.state = "completed";
     });
@@ -73,10 +81,6 @@ const Statistics = () => {
         for (let i = matchedUser.circles.length - 1; i >= 0; i--) {
             const circle = matchedUser.circles[i];
             const index = elements.findIndex(element => element.textNumber === circle.opponentGame.number);
-            if (circle.status === "active") {
-              setStage(circle.index_circle);
-            }
-          
             if (index !== -1) {
               elements[index].showCircle = true;
           
@@ -90,9 +94,9 @@ const Statistics = () => {
                 elements[index].activeCircle = circle.number;
             }
           }
+    } else {
+        setWatch(false);
     }
-    if (stage === 0) setStage(allStages);
-    setcountStages(allStages);
     if (matchedUser) {
         const index = elements.findIndex(element => element.textNumber === matchedUser.player_id);
         elements[index].state = "active";
@@ -110,7 +114,14 @@ const Statistics = () => {
   return (
     <div className='bg'>
       <div className='topbar'>
-        <img src={GroupImage} alt='' className="groupImage" onClick={navigateToTournament} />
+      {watch && (
+            <img
+            src={GroupImage}
+            alt=''
+            className="groupImage"
+            onClick={navigateToTournament}
+            />
+        )}
         <div className='title1'>{stage}/{countStages}</div>
       </div>
       <div className='content1'>
