@@ -59,11 +59,9 @@
 /* Other existing styles... */
 .playerCard {
     display: flex;
-    flex-direction: column;
     width: 100%;
     height: 100%;
     background-color: #d9d9d9;
-    position: relative;
     overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
@@ -319,6 +317,7 @@
     border-radius: 3vh;
     display: flex;
     align-items: center;
+
     justify-content: center;
 }
 
@@ -357,6 +356,7 @@
 
 .scoreInputActive {
     font-size: calc(min(31vw, 25vh));
+    white-space: nowrap; 
     text-align: center;
     color: #fff;
     background-color: rgba(101, 129, 153, 0);
