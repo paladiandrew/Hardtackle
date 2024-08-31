@@ -364,4 +364,5 @@
     border: none;
     outline: none;
     font-family: 'Arimo';
+    z-index: 1;
 }
