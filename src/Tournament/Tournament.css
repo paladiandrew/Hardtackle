@@ -356,16 +356,12 @@
 }
 
 .blueRectangleLeft .scoreInputActive {
-    position: absolute; /* Добавляем абсолютное позиционирование */
-    top: 10%; /* Позиционирование относительно родительского элемента */
-    left: 10%; /* Позиционирование относительно родительского элемента */
-    width: 80%;
-    height: 80%;
     font-size: calc(min(31vw, 25vh));
     text-align: center;
     color: #fff;
-    background-color: #658199;
+    background-color: rgba(101, 129, 153, 0);
     border: none;
     outline: none;
     font-family: 'Arimo';
+    z-index: 1;
 }
