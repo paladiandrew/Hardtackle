@@ -49,7 +49,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    overflow: hidden;
+    -webkit-background-size: cover;
     color: white;
     text-align: center;
 }
