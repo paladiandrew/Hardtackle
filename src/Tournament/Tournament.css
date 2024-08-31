@@ -369,11 +369,11 @@
 
 .kostul {
     position: absolute;
-    width: 5.2%;
+    width: 9%;
     height: 40%;
     background-color: #d9d9d9;
     top: 51%;
-    left: 48%;
+    left: 45%;
     z-index: 1;
 }
 
