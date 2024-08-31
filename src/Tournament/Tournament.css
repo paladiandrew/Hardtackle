@@ -354,4 +354,5 @@
     border: none;
     outline: none;
     font-family: 'Arimo';
+    box-sizing: border-box;
 }
