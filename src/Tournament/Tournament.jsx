@@ -278,14 +278,15 @@ const Tournament = () => {
                 )
             }
             </div>
-            <div className="whiteRectangleRight">
-                <div className="playerNumberRight">{`#${activeCircle?.opponentGame.number}`}</div>
+                <div className="whiteRectangleRight">
+                    <div className="playerNumberRight">{`#${activeCircle?.opponentGame.number}`}</div>
+                </div>
+                <div className={`blueRectangleRight ${activeCircle?.status === "completed" ? 'completed' : activeCircle?.status === "inactive" ? 'inactive' : ''}`}>
+                    <div className="score">
+                    {activeCircle?.opponentGame.fishCount}
+                </div>
+                <div className='kostul'></div>
             </div>
-            <div className={`blueRectangleRight ${activeCircle?.status === "completed" ? 'completed' : activeCircle?.status === "inactive" ? 'inactive' : ''}`}>
-    <div className="score">
-        {activeCircle?.opponentGame.fishCount}
-    </div>
-</div>
         </article>
     );
 };
