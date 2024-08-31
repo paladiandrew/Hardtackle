@@ -354,7 +354,7 @@
 
 .scoreInputActive {
     font-size: calc(min(31vw, 25vh));
-    width: 100%;
+    white-space: nowrap; 
     text-align: center;
     color: #fff;
     background-color: rgba(101, 129, 153, 0);
