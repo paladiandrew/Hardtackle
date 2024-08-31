@@ -353,7 +353,6 @@
     overflow: visible;
     font-size: calc(min(31vw, 25vh));
     text-align: center;
-    justify-content: center;
     color: #fff;
     background-color: #658199;
     border: none;
