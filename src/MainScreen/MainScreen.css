@@ -44,20 +44,16 @@ body {
 
 
 .content {
-    display: -webkit-box; /* Для старых версий Safari */
-    display: -moz-box; /* Для старых версий Firefox */
-    display: -ms-flexbox; /* Для старого IE */
-    display: -webkit-flex; /* Для современных браузеров */
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
     height: 100%;
     background-image: url('./images/bg.png');
+    -webkit-background-size: cover;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    -webkit-background-size: cover;
 }
 
 .title {
