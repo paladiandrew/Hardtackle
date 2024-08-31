@@ -347,6 +347,8 @@
 }
 
 .blueRectangleLeft .scoreInput {
+    -webkit-appearance: none;
+    line-height: normal; 
     -webkit-box-sizing: border-box;
     position: relative;
     display:flex;
@@ -362,4 +364,10 @@
     background-color: #658199;
     font-family: 'Arimo';
     box-sizing: border-box;
+}
+
+.blueRectangleLeft .scoreInput:focus {
+    line-height: normal; /* Или конкретное значение */
+    text-align: center;
+    outline: none; /* Удалите обводку, если она влияет на выравнивание */
 }
