@@ -256,7 +256,7 @@ const Tournament = () => {
             <div className="whiteRectangleLeft">
                 <div className="playerNumberLeft">{`#${activeCircle?.playerGame.number}`}</div>
             </div>
-            <div className={`blueRectangleLeft ${activeCircle?.status === "completed" ? 'completed' : activeCircle?.status === "inactive" ? 'inactive' : ''}`}>
+            <div className={`blueRectangleLeft ${activeCircle?.status === "completed" ? 'completed' : activeCircle?.status === "inactive" ? 'inactive' : 'active'}`}>
                 {activeCircle?.status === "completed" || activeCircle?.status === "inactive" ? (
                     <div className="score">{activeCircle?.playerGame.fishCount}</div>
                 ) : (activeCircle?.playerGame.approveState === 1 || activeCircle?.playerGame.approveState === 2) ? (

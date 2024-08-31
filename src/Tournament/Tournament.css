@@ -8,6 +8,10 @@
     background-color: #32404d;
 }
 
+.blueRectangleLeft.active{
+    background-color: #658199;
+}
+
 .blueRectangleLeft.completed, .blueRectangleRight.completed {
     background-color: #32404d;
 }
@@ -290,7 +294,6 @@
     position: absolute;
     width: 42%;
     height: 39%;
-    background-color: #658199;
     top: 51%;
     left: 3%;
     border-radius: 3vh;
