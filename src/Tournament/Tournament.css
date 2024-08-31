@@ -348,11 +348,12 @@
 
 .blueRectangleLeft .scoreInput {
     -webkit-box-sizing: border-box;
+    position: relative;
     width: 80%;
     height: 80%;
     overflow: visible;
     font-size: calc(min(31vw, 25vh));
-    margin-left: 50%;
+    text-align: center;
     color: #fff;
     outline: none;
     border: none;
