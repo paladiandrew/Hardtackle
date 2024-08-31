@@ -69,8 +69,12 @@ const Statistics = () => {
         user.circles
           .filter(circle => circle.status === "active")
           .map(circle => circle.index_circle)
-      ) || [allStages]);
-    setStage(minActiveCircleIndex);
+      ) || allStages);
+    if (minActiveCircleIndex) {
+        setStage(minActiveCircleIndex);
+    } else {
+        setStage(allStages);
+    }
     setcountStages(allStages);
     elements.slice(0, 4).forEach(element => {
       element.state = "completed";
