@@ -265,11 +265,11 @@ const Tournament = () => {
                 ) : (activeCircle?.playerGame.approveState === 1 || activeCircle?.playerGame.approveState === 2) ? (
                     <input
                         type="tel"
-                        className="scoreInputActive"
                         value={playerScoreInput}
                         onFocus={() => setPlayerScoreInput('')}
                         onChange={handleScoreInputChange}
                         onBlur={handleScoreInputBlur}
+                        className="scoreInputActive"
                     />
                 ) : (
                     <input
