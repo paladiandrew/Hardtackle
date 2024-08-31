@@ -8,10 +8,6 @@
     background-color: #32404d;
 }
 
-.blueRectangleLeft.active{
-    background-color: #658199;
-}
-
 .blueRectangleLeft.completed, .blueRectangleRight.completed {
     background-color: #32404d;
 }
@@ -272,10 +268,10 @@
 
 .thickerWhiteLine {
     position: absolute;
-    top: 60%;
+    top: 55%;
     width: 100%;
     height: 0.7vh; /* Сделаем линию толще */
-    border-radius: 15px;
+    border-radius: 3vh;
     background-color: #E7E0EC;
      /* Ensure it is above other elements */
 }
@@ -287,18 +283,18 @@
     background-color: #fff;
     top: 43%;
     left: 6%;
-    border-radius: 15px;
+    border-radius: 2vh;
 }
 
 .blueRectangleLeft {
-    display: flex;
     position: absolute;
     width: 42%;
     height: 39%;
+    background-color: #658199;
     top: 51%;
     left: 3%;
-    border-radius: 15px;
-    text-align: center;
+    border-radius: 3vh;
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -310,7 +306,7 @@
     background-color: #fff;
     top: 43%;
     left: 57.5%;
-    border-radius: 15px;
+    border-radius: 2vh;
 }
 
 .blueRectangleRight {
@@ -320,7 +316,7 @@
     background-color: #658199;
     top: 51%;
     left: 54%;
-    border-radius: 15px;
+    border-radius: 3vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -348,16 +344,15 @@
 }
 
 .blueRectangleLeft .scoreInput {
-    line-height: normal; 
-    -webkit-box-sizing: border-box;
+    position: relative;
+    margin-left: 50%;
+    transform: translateX(-50%);
     width: 80%;
     height: 80%;
-    overflow: auto;
     font-size: calc(min(31vw, 25vh));
     color: #fff;
-    outline: none;
-    border: none;
     background-color: #658199;
+    border: none;
+    outline: none;
     font-family: 'Arimo';
-    box-sizing: border-box;
 }
