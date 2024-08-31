@@ -74,6 +74,7 @@ const Statistics = () => {
         setStage(minActiveCircleIndex);
     } else {
         setStage(allStages);
+        setcountStages(allStages);
     }
     setcountStages(allStages);
     elements.slice(0, 4).forEach(element => {
