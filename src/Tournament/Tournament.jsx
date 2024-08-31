@@ -214,6 +214,7 @@ const Tournament = () => {
 
     return (
         <article className="playerCard">
+            <div className='kostul'></div>
             <div className="mainRectangle"></div>
             <div className="header"></div>
             <div className="triangle"><span>VS</span></div>
@@ -285,7 +286,6 @@ const Tournament = () => {
                     <div className="score">
                     {activeCircle?.opponentGame.fishCount}
                 </div>
-                <div className='kostul'></div>
             </div>
         </article>
     );
