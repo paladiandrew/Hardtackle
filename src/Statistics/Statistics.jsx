@@ -16,7 +16,7 @@ const Statistics = () => {
   const navigate = useNavigate();
   const [stage, setStage] = useState(0);
   const [watch, setWatch] = useState(true);
-  const [countStages, setcountStages] = useState(0);
+  const [countStages, setCountStages] = useState(0);
   const [elements, setElements] = useState(elements1)
   const navigateToTournament = () => {
     navigate(`/tournament/${code}`);
@@ -65,18 +65,15 @@ const Statistics = () => {
       }
     });
     const allStages = Math.min(...users.map((user) => user.circles.length));
-    const minActiveCircleIndex = Math.min(...users.flatMap(user => 
-        user.circles
-          .filter(circle => circle.status === "active")
-          .map(circle => circle.index_circle)
-      ) || allStages);
-    if (minActiveCircleIndex) {
-        setStage(minActiveCircleIndex);
-    } else {
-        setStage(allStages);
-        setcountStages(allStages);
+    if (users[0]) {
+        let activeCircle1 = users[0].circles.find(circle => circle.status === 'active');
+        if (activeCircle1) {
+            setStage(activeCircle1.index_circle);
+        } else {
+            setStage(allStages)
+        }
     }
-    setcountStages(allStages);
+    setCountStages(allStages);
     elements.slice(0, 4).forEach(element => {
       element.state = "completed";
     });
