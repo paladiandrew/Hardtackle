@@ -273,7 +273,7 @@ const Tournament = () => {
                         type="tel"
                         value={playerScoreInput}
                         readOnly
-                        className="scoreInput"
+                        className="scoreInputActive"
                     />
                 )
             }
