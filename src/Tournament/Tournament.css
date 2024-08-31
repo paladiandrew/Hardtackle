@@ -356,7 +356,7 @@
 }
 
 .blueRectangleLeft .scoreInputActive {
-    position: relative;
+    position: absolute;
     font-size: calc(min(31vw, 25vh));
     text-align: center;
     color: #fff;
