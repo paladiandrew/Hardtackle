@@ -344,12 +344,25 @@
 }
 
 .blueRectangleLeft .scoreInput {
-    position: relative;
-    margin-left: 50%;
-    transform: translateX(-50%);
     width: 80%;
     height: 80%;
     font-size: calc(min(31vw, 25vh));
+    text-align: center;
+    color: #fff;
+    background-color: #658199;
+    border: none;
+    outline: none;
+    font-family: 'Arimo';
+}
+
+.blueRectangleLeft .scoreInputActive {
+    position: absolute; /* Добавляем абсолютное позиционирование */
+    top: 10%; /* Позиционирование относительно родительского элемента */
+    left: 10%; /* Позиционирование относительно родительского элемента */
+    width: 80%;
+    height: 80%;
+    font-size: calc(min(31vw, 25vh));
+    text-align: center;
     color: #fff;
     background-color: #658199;
     border: none;
