@@ -343,7 +343,7 @@
     font-family: 'Arimo';
 }
 
-.blueRectangleLeft .scoreInput {
+.scoreInput {
     width: 80%;
     height: 80%;
     font-size: calc(min(31vw, 25vh));
@@ -355,8 +355,8 @@
     font-family: 'Arimo';
 }
 
-.blueRectangleLeft .scoreInputActive {
-    position: absolute;
+.scoreInputActive {
+    position: relative;
     font-size: calc(min(31vw, 25vh));
     text-align: center;
     color: #fff;

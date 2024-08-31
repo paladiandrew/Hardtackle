@@ -266,7 +266,7 @@ const Tournament = () => {
                         onFocus={() => setPlayerScoreInput('')}
                         onChange={handleScoreInputChange}
                         onBlur={handleScoreInputBlur}
-                        className="scoreInputActive"
+                        className="scoreInput"
                     />
                 ) : (
                     <input
