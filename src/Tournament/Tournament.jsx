@@ -262,7 +262,7 @@ const Tournament = () => {
                 ) : (activeCircle?.playerGame.approveState === 1 || activeCircle?.playerGame.approveState === 2) ? (
                     <input
                         type="tel"
-                        className="scoreInput"
+                        className="scoreInputActive"
                         value={playerScoreInput}
                         onFocus={() => setPlayerScoreInput('')}
                         onChange={handleScoreInputChange}
@@ -273,7 +273,7 @@ const Tournament = () => {
                         type="tel"
                         value={playerScoreInput}
                         readOnly
-                        className="scoreInputActive"
+                        className="scoreInput"
                     />
                 )
             }
