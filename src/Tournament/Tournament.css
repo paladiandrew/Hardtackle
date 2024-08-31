@@ -352,8 +352,9 @@
     height: 80%;
     overflow: visible;
     font-size: calc(min(31vw, 25vh));
-    text-align: center;
+    margin: 0 auto;
     color: #fff;
+    outline: none;
     background-color: #658199;
     font-family: 'Arimo';
     box-sizing: border-box;
