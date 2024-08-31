@@ -272,10 +272,10 @@
 
 .thickerWhiteLine {
     position: absolute;
-    top: 55%;
+    top: 60%;
     width: 100%;
     height: 0.7vh; /* Сделаем линию толще */
-    border-radius: 3vh;
+    border-radius: 15px;
     background-color: #E7E0EC;
      /* Ensure it is above other elements */
 }
@@ -287,7 +287,7 @@
     background-color: #fff;
     top: 43%;
     left: 6%;
-    border-radius: 2vh;
+    border-radius: 15px;
 }
 
 .blueRectangleLeft {
@@ -296,7 +296,7 @@
     height: 39%;
     top: 51%;
     left: 3%;
-    border-radius: 3vh;
+    border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -309,7 +309,7 @@
     background-color: #fff;
     top: 43%;
     left: 57.5%;
-    border-radius: 2vh;
+    border-radius: 15px;
 }
 
 .blueRectangleRight {
@@ -319,7 +319,7 @@
     background-color: #658199;
     top: 51%;
     left: 54%;
-    border-radius: 3vh;
+    border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -355,8 +355,6 @@
     text-align: center;
     color: #fff;
     background-color: #658199;
-    border: none;
-    outline: none;
     font-family: 'Arimo';
     box-sizing: border-box;
 }
