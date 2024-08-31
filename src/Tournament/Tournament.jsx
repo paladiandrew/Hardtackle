@@ -100,6 +100,9 @@ const Tournament = () => {
                     circles: updatedCircles,
                 }));
                 const newActiveCircle = updatedCircles.find(circle => circle.opponentGame.number === currUpdatedActiveCircle.playerGame.number && circle.playerGame.number === currUpdatedActiveCircle.opponentGame.number && circle.status === 'active');
+                if (newActiveCircle.playerGame.approveState === 1 || newActiveCircle.playerGame.approveState === 2) {
+                    inputRef.current?.focus();
+                }
                 setActiveCircle(newActiveCircle);
                 setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
                 }
@@ -264,6 +267,7 @@ const Tournament = () => {
                     <div className="score">{activeCircle?.playerGame.fishCount}</div>
                 ) : (activeCircle?.playerGame.approveState === 1 || activeCircle?.playerGame.approveState === 2) ? (
                     <input
+                        ref={inputRef}
                         type="tel"
                         value={playerScoreInput}
                         onFocus={() => setPlayerScoreInput('')}
