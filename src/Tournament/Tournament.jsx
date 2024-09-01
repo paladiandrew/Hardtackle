@@ -223,7 +223,9 @@ const Tournament = () => {
             <div className={`redRectangle ${activeCircle?.status === "completed" ? 'completed' : activeCircle?.status === "inactive" ? 'inactive' : ''}`}>
                 {`#${activeCircle?.opponentGame.number} ${activeCircle?.opponentGame.name}: ${activeCircle?.opponentGame.total_points} pts`}
             </div>
-            <div className="sectorInfo">{`Sector ${activeCircle?.playerGame.sector}R`}</div>
+            <div className="sectorInfo">
+                {`Sector ${activeCircle?.playerGame.sector}${(activeCircle?.playerGame.number % 2 === activeCircle?.index_circle % 2) ? 'R' : 'L'}`}
+            </div>
             <div
                 className={`bottomRectangle ${activeCircle?.status === "inactive" || activeCircle?.status === "completed" ? 'inactive' : `state-${activeCircle?.playerGame.approveState}`}`}
                 onClick={updateApproveState}
