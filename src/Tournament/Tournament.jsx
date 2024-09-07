@@ -135,6 +135,10 @@ const Tournament = () => {
         if (circle.status === 'active') setPlayerScoreInput(circle.playerGame.fishCount);
     };
 
+    useEffect(() => {
+        console.log('Эффект запущен!');
+        console.log(playerScoreInput);
+      }, [playerScoreInput]);
 
     const navigateToTournament = () => {
         socket.on("disconnect", () => {
