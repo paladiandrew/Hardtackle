@@ -135,13 +135,6 @@ const Tournament = () => {
         if (circle.status === 'active') setPlayerScoreInput(circle.playerGame.fishCount);
     };
 
-    useEffect(() => {
-        console.log('Эффект запущен!');
-        console.log(playerScoreInput);
-        prevScoreInput = playerScoreInput;
-        setPlayerScoreInput(prevScoreInput)
-      }, [playerScoreInput]);
-
     const navigateToTournament = () => {
         socket.on("disconnect", () => {
             console.log("Disconnected from WebSocket server");
