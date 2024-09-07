@@ -125,7 +125,7 @@ const Tournament = () => {
             socket.off('allUsersUpdated', handleAllUsersUpdated);
             socket.off('userUpdated', handleUserUpdated);
         };
-    }, [userData]);
+    }, [userData, playerScoreInput, activeCircle]);
 
     const handleCircleClick = (circle) => {
         setActiveCircle(circle);
