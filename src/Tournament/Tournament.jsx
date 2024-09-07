@@ -138,6 +138,8 @@ const Tournament = () => {
     useEffect(() => {
         console.log('Эффект запущен!');
         console.log(playerScoreInput);
+        prevScoreInput = playerScoreInput;
+        setPlayerScoreInput(prevScoreInput)
       }, [playerScoreInput]);
 
     const navigateToTournament = () => {
