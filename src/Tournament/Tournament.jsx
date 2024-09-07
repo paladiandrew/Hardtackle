@@ -114,7 +114,9 @@ const Tournament = () => {
                  if (!currUpdatedActiveCircle) {
                 currUpdatedActiveCircle = currentUser.circles.find(circle => circle.number === 1);
                 }
-                handleCircleClick(currUpdatedActiveCircle);
+                setTimeout(() => {
+                    handleCircleClick(currUpdatedActiveCircle);
+                }, 100);
             }
         };
     
