@@ -23,7 +23,7 @@ const Tournament = () => {
     const { state } = location;
     
     const [activeCircle, setActiveCircle] = useState(null);
-    const [playerScoreInput, setPlayerScoreInput] = useState(0);
+    const [playerScoreInput, setPlayerScoreInput] = useState(null);
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -141,7 +141,7 @@ const Tournament = () => {
     };
 
     const updateApproveState = async () => {
-        if (!activeCircle || activeCircle.status !== "active" || !userData) return;
+        if (!activeCircle || activeCircle.status !== "active" || !userData || activeCircle.playerGame.fishCount === null || activeCircle.opponentGame.fishCount === null) return;
         try {
             const response = await fetch(`${server_url}/api/update-approve-state`, {
                 method: 'POST',
