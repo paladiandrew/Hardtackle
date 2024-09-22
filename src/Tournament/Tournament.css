@@ -412,8 +412,8 @@
   .enterButton {
     position: absolute;
     width: 100%;
-    height: 10%;
-    top: 90%;
+    height: 20%;
+    top: 80%;
     left: 0%;
     border: none;
     border-radius: 3vh;
@@ -428,10 +428,6 @@
   }
   
   @media screen and (max-width: 600px) {
-    .scoreInputActive {
-        font-size: calc(min(31vw, 25vh));
-    }
-  
     .enterButton {
       font-size: 3vh;
     }
