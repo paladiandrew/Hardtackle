@@ -256,23 +256,6 @@ const Tournament = () => {
     const activeCircleIndex = userData.circles.findIndex(circle => circle.number === activeCircle.number && circle.status === 'active');
     if (activeCircleIndex !== -1) {
       let updatedUserData = { ...userData };
-      let updatedActiveCircle = { ...updatedUserData.circles[activeCircleIndex] };
-
-      // Обновляем approveState
-      if (updatedActiveCircle.playerGame.approveState === 1) {
-        updatedActiveCircle.playerGame.approveState = 2;
-      } else if (updatedActiveCircle.playerGame.approveState === 2) {
-        updatedActiveCircle.playerGame.approveState = 1;
-      } else if (updatedActiveCircle.playerGame.approveState === 3) {
-        updatedActiveCircle.playerGame.approveState = 4;
-      } else if (updatedActiveCircle.playerGame.approveState === 4) {
-        updatedActiveCircle.playerGame.approveState = 3;
-      }
-
-      updatedUserData.circles[activeCircleIndex] = updatedActiveCircle;
-      setUserData(updatedUserData);
-      setActiveCircle(updatedActiveCircle);
-
       // Подготавливаем данные для отправки
       const dataToSend = { userData: updatedUserData, activeCircleNumber: activeCircle.number };
 

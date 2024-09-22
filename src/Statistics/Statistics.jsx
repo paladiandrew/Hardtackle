@@ -59,7 +59,7 @@ const Statistics = () => {
         .map((user, index) => ({
           leftBoxText: `${index + 1}`,
           textNumber: user.player_id,
-          textName: `${user.player_id}` `${user.user_name}`,
+          textName: `${user.player_id} ${user.user_name}`,
           textPts: user.total_user_points,
           textF: user.total_user_fish,
           state: "inactive",

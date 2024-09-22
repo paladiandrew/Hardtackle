@@ -76,13 +76,6 @@
     justify-content: space-between;
 }
 
-.playerName {
-    font-size: 3vh;
-    line-height: 3vh;
-    color: #fff;
-    margin-right: auto;
-}
-
 .vectorImage {
     max-height: 100%;
     max-width: 20%;
@@ -135,6 +128,9 @@
 .redRectangle {
     position: absolute;
     width: 92%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     height: 5%;
     background-color: #ea5558;
     top: 28%;
@@ -180,12 +176,17 @@
 
 .playerName {
     position: absolute;
+    margin-right: auto;
+    width: 92%;
     top: 2%;
     left: 4%;
     font-size: 3vh;
     font-family: 'Arimo';
     line-height: 3vh;
     color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .circleContainer {
@@ -294,10 +295,8 @@
     left: 3%;
     border-radius: 3vh;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1vh;
   }
 
 .whiteRectangleRight {
@@ -320,7 +319,6 @@
     border-radius: 3vh;
     display: flex;
     align-items: center;
-
     justify-content: center;
 }
 
@@ -412,19 +410,20 @@
   }
   
   .enterButton {
-    width: 60%;
-    padding: 1vh;
+    position: absolute;
+    width: 42%;
+    height: 10%;
+    top: 70%;
+    left: 3%;
+    border-radius: 3vh;
     font-size: 2.5vh;
     font-family: 'Arimo';
     color: #fff;
     background-color: #ea5558;
-    border: none;
-    border-radius: 1vh;
-    cursor: pointer;
   }
   
   .enterButton:active {
-    background-color: #cc494c;
+    background-color: #666666;
   }
   
   @media screen and (max-width: 600px) {
