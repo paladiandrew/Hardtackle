@@ -118,7 +118,7 @@ const Tournament = () => {
         }
         setActiveCircle(currUpdatedActiveCircle);
         setTimeout(() => {
-          setPlayerScoreInput('');
+          setPlayerScoreInput(currUpdatedActiveCircle.playerGame.fishcount);
         }, 100);
         console.log(playerScoreInput);
       }
