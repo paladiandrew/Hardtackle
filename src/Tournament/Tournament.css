@@ -394,21 +394,7 @@
     top: 51%;
     left: 96%;
     z-index: 1;
-}
-
-  
-  .scoreInputActive {
-    width: 80%;
-    font-size: 3vh; 
-    text-align: center;
-    color: #fff;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    font-family: 'Arimo';
-    margin-bottom: 1vh;
-  }
-  
+} 
   .enterButton {
     position: absolute;
     width: 100%;
