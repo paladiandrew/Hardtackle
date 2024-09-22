@@ -294,9 +294,11 @@
     left: 3%;
     border-radius: 3vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-}
+    padding: 1vh;
+  }
 
 .whiteRectangleRight {
     position: absolute;
@@ -395,3 +397,42 @@
     left: 96%;
     z-index: 1;
 }
+
+  
+  .scoreInputActive {
+    width: 80%;
+    font-size: 3vh; 
+    text-align: center;
+    color: #fff;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Arimo';
+    margin-bottom: 1vh;
+  }
+  
+  .enterButton {
+    width: 60%;
+    padding: 1vh;
+    font-size: 2.5vh;
+    font-family: 'Arimo';
+    color: #fff;
+    background-color: #ea5558;
+    border: none;
+    border-radius: 1vh;
+    cursor: pointer;
+  }
+  
+  .enterButton:active {
+    background-color: #cc494c;
+  }
+  
+  @media screen and (max-width: 600px) {
+    .scoreInputActive {
+      font-size: 4vh;
+    }
+  
+    .enterButton {
+      font-size: 3vh;
+    }
+  }

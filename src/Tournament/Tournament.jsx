@@ -1,218 +1,333 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import vectorImage from './images/Vector.png';
-import {io} from 'socket.io-client';
+import { io } from 'socket.io-client';
 import './Tournament.css';
 
-const server_url = process.env.REACT_APP_API_URL;;
-
+const server_url = process.env.REACT_APP_API_URL;
 
 const socket = io(`${server_url}`, {
-    transports: ['websocket', 'polling'],
-    secure: true,
-  });
+  transports: ['websocket', 'polling'],
+  secure: true,
+});
 
 socket.on("connect", () => {
-    console.log("Connected to WebSocket server");
+  console.log("Connected to WebSocket server");
 });
 
 const Tournament = () => {
-    const { code } = useParams();
-    const navigate = useNavigate();
-    const location = useLocation();
-    const { state } = location;
-    
-    const [activeCircle, setActiveCircle] = useState(null);
-    const [playerScoreInput, setPlayerScoreInput] = useState(null);
-    const [userData, setUserData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const { code } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [previousScoreInput, setPreviousScoreInput] = useState(null);
+  const { state } = location;
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await fetch(`${server_url}/api/user/${code}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                setUserData(data);
-                if (state && state.activeCircle && data.circles.find(circle => circle.number === state.activeCircle)) {
-                    const newActiveCircle = data.circles.find(circle => circle.number === state.activeCircle);
-                    setActiveCircle(newActiveCircle);
-                    setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
-                  } else {
-                    const newActiveCircle = data.circles.find(circle => circle.status === 'active');
-                    if (newActiveCircle) {
-                      setActiveCircle(newActiveCircle);
-                      setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
-                    } else {
-                      setActiveCircle(data.circles[0]);
-                      setPlayerScoreInput(data.circles[0].fishCount);
-                    }
-                  }
-            } catch (error) {
-                setError(error.message || 'Unknown error');
-            } finally {
-                setLoading(false);
-            }
-        };
-        
-        fetchUserData();
-    }, [code, state]);
+  const [activeCircle, setActiveCircle] = useState(null);
+  const [playerScoreInput, setPlayerScoreInput] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Используем useRef для хранения очереди несообщенных действий
+  const unsentActionsQueueRef = useRef([]);
 
-
-    useEffect(() => {
-        const handleUserUpdated = (data) => {
-            const { updatedUserData, activeCircleNumber } = data;
-            if (userData && userData.code === updatedUserData.code) {
-                setUserData(updatedUserData);
-                const updatedCircle = updatedUserData.circles.find(c => c.number === activeCircleNumber);
-                setActiveCircle(updatedCircle);
-                setPlayerScoreInput(updatedCircle.playerGame.fishCount);
-            } else if (userData) {
-                const currUpdatedActiveCircle = updatedUserData.circles.find(circle => circle.number === activeCircleNumber && circle.opponentGame.number === userData.player_id && circle.status === 'active');
-                let number = activeCircle.number;
-                if (currUpdatedActiveCircle){
-                const updatedCircles = userData.circles.map(circle => {
-                    const updatedCircle = updatedUserData.circles.find(c => c.status === "active" && c.opponentGame.number === circle.playerGame.number && circle.opponentGame.number === c.playerGame.number && circle.status === 'active');
-                    if (updatedCircle) {
-                        number = circle.number;
-                        return {
-                            ...circle,
-                            opponentGame: {
-                                ...circle.opponentGame,
-                                fishCount: updatedCircle.playerGame.fishCount,
-                                approveState: updatedCircle.playerGame.approveState,
-                            },
-                            playerGame: {
-                                ...circle.playerGame,
-                                fishCount: updatedCircle.opponentGame.fishCount,
-                                approveState: updatedCircle.opponentGame.approveState,  
-                            } 
-                        };
-                    }
-                    return circle;
-                });
-                setUserData(prevUserData => ({
-                    ...prevUserData,
-                    circles: updatedCircles,
-                }));
-                const newActiveCircle = updatedCircles.find(circle => circle.opponentGame.number === currUpdatedActiveCircle.playerGame.number && circle.playerGame.number === currUpdatedActiveCircle.opponentGame.number && circle.status === 'active');
-                setActiveCircle(newActiveCircle);
-                setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
-                }
-            }
-        };
-
-        const handleAllUsersUpdated = (updatedUsersData) => {
-            const currentUser = updatedUsersData.find(user => user.code === code);
-            if (currentUser) {
-                setUserData(currentUser);
-                let currUpdatedActiveCircle = currentUser.circles.find(circle => circle.status === 'active');
-                 if (!currUpdatedActiveCircle) {
-                currUpdatedActiveCircle = currentUser.circles.find(circle => circle.number === 1);
-                }
-                setActiveCircle(currUpdatedActiveCircle);
-                setTimeout(() => {
-                    setPlayerScoreInput('');
-                }, 100);
-                console.log(playerScoreInput);
-            }
-        };
-    
-        socket.on('allUsersUpdated', handleAllUsersUpdated);
-        socket.on('userUpdated', handleUserUpdated);
-        return () => {
-            socket.off('allUsersUpdated', handleAllUsersUpdated);
-            socket.off('userUpdated', handleUserUpdated);
-        };
-    }, [userData, playerScoreInput, activeCircle]);
-
-    const handleCircleClick = (circle) => {
-        setActiveCircle(circle);
-        if (circle.status === 'active') setPlayerScoreInput(circle.playerGame.fishCount);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`${server_url}/api/user/${code}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setUserData(data);
+        if (state && state.activeCircle && data.circles.find(circle => circle.number === state.activeCircle)) {
+          const newActiveCircle = data.circles.find(circle => circle.number === state.activeCircle);
+          setActiveCircle(newActiveCircle);
+          setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
+        } else {
+          const newActiveCircle = data.circles.find(circle => circle.status === 'active');
+          if (newActiveCircle) {
+            setActiveCircle(newActiveCircle);
+            setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
+          } else {
+            setActiveCircle(data.circles[0]);
+            setPlayerScoreInput(data.circles[0].fishCount);
+          }
+        }
+      } catch (error) {
+        setError(error.message || 'Unknown error');
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const navigateToTournament = () => {
-        socket.on("disconnect", () => {
-            console.log("Disconnected from WebSocket server");
-        });
-        navigate(`/statistics/${code}`);
-    };
+    fetchUserData();
+  }, [code, state]);
 
-    const updateApproveState = async () => {
-        if (!activeCircle || activeCircle.status !== "active" || !userData || activeCircle.playerGame.fishCount === null || activeCircle.opponentGame.fishCount === null) return;
-        try {
-            const response = await fetch(`${server_url}/api/update-approve-state`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+  useEffect(() => {
+    // Обработчики событий сокета для обновления данных пользователя
+    const handleUserUpdated = (data) => {
+      const { updatedUserData, activeCircleNumber } = data;
+      if (userData && userData.code === updatedUserData.code) {
+        setUserData(updatedUserData);
+        const updatedCircle = updatedUserData.circles.find(c => c.number === activeCircleNumber);
+        setActiveCircle(updatedCircle);
+        setPlayerScoreInput(updatedCircle.playerGame.fishCount);
+      } else if (userData) {
+        const currUpdatedActiveCircle = updatedUserData.circles.find(circle => circle.number === activeCircleNumber && circle.opponentGame.number === userData.player_id && circle.status === 'active');
+        let number = activeCircle?.number;
+        if (currUpdatedActiveCircle) {
+          const updatedCircles = userData.circles.map(circle => {
+            const updatedCircle = updatedUserData.circles.find(c => c.status === "active" && c.opponentGame.number === circle.playerGame.number && circle.opponentGame.number === c.playerGame.number && circle.status === 'active');
+            if (updatedCircle) {
+              number = circle.number;
+              return {
+                ...circle,
+                opponentGame: {
+                  ...circle.opponentGame,
+                  fishCount: updatedCircle.playerGame.fishCount,
+                  approveState: updatedCircle.playerGame.approveState,
                 },
-                body: JSON.stringify({userData: userData, activeCircleNumber: activeCircle.number}),
-            });
-    
-            if (!response.ok) setError('Failed to update approve state');
-        } catch (error) {
-            setError('Error updating approve state:', error);
-        }
-    };
-
-    const handleScoreInputChange = (e) => {
-        let value = e.target.value;
-        if (value === '' || isNaN(value) || parseInt(value) > 99) {
-            value = 0;
-        } else {
-            value = parseInt(value);
-        }
-        setPlayerScoreInput(value);
-    };
-    
-
-    const handleScoreInputBlur = async () => {
-        let newPlayerScoreInput;
-        if (playerScoreInput === '' || isNaN(playerScoreInput)) {
-            setPlayerScoreInput(0);
-            newPlayerScoreInput = 0;
-        } else {
-            newPlayerScoreInput = playerScoreInput;
-        }
-        const activeCircleIndex = userData.circles.findIndex(circle => circle.number === activeCircle.number && circle.status === 'active');
-        if (activeCircleIndex !== -1) {
-            let updatedUserData = userData;
-            updatedUserData.circles[activeCircleIndex].playerGame.fishCount = newPlayerScoreInput;
-            setPlayerScoreInput(newPlayerScoreInput);
-            setUserData(updatedUserData);
-            setActiveCircle( updatedUserData.circles[activeCircleIndex]);
-            try {
-                const response = await fetch(`${server_url}/api/update-score`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({userData: userData, activeCircleNumber: activeCircle.number}),
-                });
-    
-                if (response.ok) {
-
-                } else {
-                    setError('Failed to update score');
+                playerGame: {
+                  ...circle.playerGame,
+                  fishCount: updatedCircle.opponentGame.fishCount,
+                  approveState: updatedCircle.opponentGame.approveState,
                 }
-            } catch (error) {
-                setError('Error updating score:', error);
+              };
             }
+            return circle;
+          });
+          setUserData(prevUserData => ({
+            ...prevUserData,
+            circles: updatedCircles,
+          }));
+          const newActiveCircle = updatedCircles.find(circle => circle.opponentGame.number === currUpdatedActiveCircle.playerGame.number && circle.playerGame.number === currUpdatedActiveCircle.opponentGame.number && circle.status === 'active');
+          setActiveCircle(newActiveCircle);
+          setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
         }
+      }
     };
-    
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    const handleAllUsersUpdated = (updatedUsersData) => {
+      const currentUser = updatedUsersData.find(user => user.code === code);
+      if (currentUser) {
+        setUserData(currentUser);
+        let currUpdatedActiveCircle = currentUser.circles.find(circle => circle.status === 'active');
+        if (!currUpdatedActiveCircle) {
+          currUpdatedActiveCircle = currentUser.circles.find(circle => circle.number === 1);
+        }
+        setActiveCircle(currUpdatedActiveCircle);
+        setTimeout(() => {
+          setPlayerScoreInput('');
+        }, 100);
+        console.log(playerScoreInput);
+      }
+    };
 
-    if (error) {
-        return <div>Error: {error}</div>;
+    socket.on('allUsersUpdated', handleAllUsersUpdated);
+    socket.on('userUpdated', handleUserUpdated);
+
+    const handleDisconnect = () => {
+      console.log('Disconnected from server');
+    };
+
+    const handleReconnect = () => {
+      console.log('Reconnected to server');
+      handleReconnection();
+    };
+
+    socket.on('disconnect', handleDisconnect);
+    socket.on('reconnect', handleReconnect);
+
+    return () => {
+      socket.off('allUsersUpdated', handleAllUsersUpdated);
+      socket.off('userUpdated', handleUserUpdated);
+      socket.off('disconnect', handleDisconnect);
+      socket.off('reconnect', handleReconnect);
+    };
+  }, [userData, playerScoreInput, activeCircle, code]);
+
+  // Функция обработки повторного подключения
+  const handleReconnection = () => {
+    resendUnsentActions();
+    fetchLatestDataFromServer();
+  };
+
+  useEffect(() => {
+    if (activeCircle) {
+      setPlayerScoreInput(activeCircle.playerGame.fishCount);
+      setPreviousScoreInput(activeCircle.playerGame.fishCount);
     }
+  }, [activeCircle]);
+  
+  // Функция повторной отправки несообщенных действий
+  const resendUnsentActions = () => {
+    while (unsentActionsQueueRef.current.length > 0) {
+      const action = unsentActionsQueueRef.current.shift();
+      action();
+    }
+  };
+
+  // Функция получения последних данных с сервера
+  const fetchLatestDataFromServer = async () => {
+    try {
+      const response = await fetch(`${server_url}/api/user/${code}`);
+      if (response.ok) {
+        const data = await response.json();
+        setUserData(data);
+        updateActiveCircle(data);
+      } else {
+        console.error('Failed to fetch latest data');
+      }
+    } catch (error) {
+      console.error('Error fetching latest data:', error);
+    }
+  };
+
+  // Функция обновления активного круга
+  const updateActiveCircle = (data) => {
+    const newActiveCircle = data.circles.find(circle => circle.status === 'active') || data.circles[0];
+    setActiveCircle(newActiveCircle);
+    setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
+  };
+
+  const handleCircleClick = (circle) => {
+    setActiveCircle(circle);
+    if (circle.status === 'active') setPlayerScoreInput(circle.playerGame.fishCount);
+  };
+
+  const navigateToTournament = () => {
+    socket.on("disconnect", () => {
+      console.log("Disconnected from WebSocket server");
+    });
+    navigate(/statistics/$`{code}`);
+  };
+
+  // Функция отправки данных на сервер с обработкой ошибок и очередью
+  const sendDataToServer = async (action, data) => {
+    if (navigator.onLine) {
+      try {
+        let response;
+        if (action === 'updateScore') {
+          response = await fetch($`{server_url}/api/update-score`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          });
+        } else if (action === 'updateApproveState') {
+          response = await fetch($`{server_url}/api/update-approve-state`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          });
+        }
+        if (response.ok) {
+          console.log(`${action} successfully sent to server`);
+        } else {
+          console.error(`Failed to send ${action} to server`);
+          unsentActionsQueueRef.current.push(() => sendDataToServer(action, data));
+        }
+      } catch (error) {
+        console.error('Error sending ${action} to server:', error);
+        unsentActionsQueueRef.current.push(() => sendDataToServer(action, data));
+      }
+    } else {
+      unsentActionsQueueRef.current.push(() => sendDataToServer(action, data));
+    }
+  };
+
+  // Модифицированная функция обновления состояния подтверждения
+  const updateApproveState = async () => {
+    if (
+        !activeCircle ||
+        activeCircle.status !== "active" ||
+        !userData ||
+        typeof activeCircle.playerGame.fishCount !== 'number' ||
+        isNaN(activeCircle.playerGame.fishCount) ||
+        typeof activeCircle.opponentGame.fishCount !== 'number' ||
+        isNaN(activeCircle.opponentGame.fishCount)
+    ) return;
+
+    // Обновляем локальные данные
+    const activeCircleIndex = userData.circles.findIndex(circle => circle.number === activeCircle.number && circle.status === 'active');
+    if (activeCircleIndex !== -1) {
+      let updatedUserData = { ...userData };
+      let updatedActiveCircle = { ...updatedUserData.circles[activeCircleIndex] };
+
+      // Обновляем approveState
+      if (updatedActiveCircle.playerGame.approveState === 1) {
+        updatedActiveCircle.playerGame.approveState = 2;
+      } else if (updatedActiveCircle.playerGame.approveState === 2) {
+        updatedActiveCircle.playerGame.approveState = 1;
+      } else if (updatedActiveCircle.playerGame.approveState === 3) {
+        updatedActiveCircle.playerGame.approveState = 4;
+      } else if (updatedActiveCircle.playerGame.approveState === 4) {
+        updatedActiveCircle.playerGame.approveState = 3;
+      }
+
+      updatedUserData.circles[activeCircleIndex] = updatedActiveCircle;
+      setUserData(updatedUserData);
+      setActiveCircle(updatedActiveCircle);
+
+      // Подготавливаем данные для отправки
+      const dataToSend = { userData: updatedUserData, activeCircleNumber: activeCircle.number };
+
+      // Отправляем данные на сервер
+      sendDataToServer('updateApproveState', dataToSend);
+    }
+  };
+
+  // Модифицированная функция обработки изменения ввода очков
+  const handleScoreInputChange = (e) => {
+    let value = e.target.value;
+    if (value === '' || isNaN(value) || parseInt(value) > 99) {
+      value = 0;
+    } else {
+      value = parseInt(value);
+    }
+    setPlayerScoreInput(value);
+  };
+
+  const handleEnterButtonClick = () => {
+    let newPlayerScoreInput;
+    if (playerScoreInput === '' || isNaN(playerScoreInput)) {
+      newPlayerScoreInput = 0;
+    } else {
+      newPlayerScoreInput = parseInt(playerScoreInput, 10);
+    }
+  
+    if (newPlayerScoreInput !== previousScoreInput) {
+      const activeCircleIndex = userData.circles.findIndex(circle => circle.number === activeCircle.number && circle.status === 'active');
+      if (activeCircleIndex !== -1) {
+        let updatedUserData = { ...userData };
+        updatedUserData.circles[activeCircleIndex].playerGame.fishCount = newPlayerScoreInput;
+        setPlayerScoreInput(newPlayerScoreInput);
+        setUserData(updatedUserData);
+        setActiveCircle(updatedUserData.circles[activeCircleIndex]);
+  
+        // Подготовка данных для отправки
+        const dataToSend = { userData: updatedUserData, activeCircleNumber: activeCircle.number };
+  
+        // Отправка данных на сервер
+        sendDataToServer('updateScore', dataToSend);
+  
+        // Обновляем previousScoreInput
+        setPreviousScoreInput(newPlayerScoreInput);
+      }
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
     return (
         <article className="playerCard">
@@ -267,14 +382,16 @@ const Tournament = () => {
                 {activeCircle?.status === "completed" || activeCircle?.status === "inactive" ? (
                     <div className="score">{activeCircle?.playerGame.fishCount}</div>
                 ) : (activeCircle?.playerGame.approveState === 1 || activeCircle?.playerGame.approveState === 2) ? (
+                    <>
                     <input
-                        type="tel"
-                        value={playerScoreInput}
-                        onFocus={() => setPlayerScoreInput('')}
-                        onChange={handleScoreInputChange}
-                        onBlur={handleScoreInputBlur}
-                        className="scoreInputActive"
+                      type="tel"
+                      value={playerScoreInput}
+                      onFocus={() => setPlayerScoreInput('')}
+                      onChange={handleScoreInputChange}
+                      className="scoreInputActive"
                     />
+                    <button onClick={handleEnterButtonClick} className="enterButton">Enter</button>
+                    </>
                 ) : (
                     <input
                         type="tel"
