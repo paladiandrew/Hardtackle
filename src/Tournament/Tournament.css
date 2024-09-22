@@ -426,9 +426,3 @@
   .enterButton:active {
     background-color: #666666;
   }
-  
-  @media screen and (max-width: 600px) {
-    .enterButton {
-      font-size: 3vh;
-    }
-  }
