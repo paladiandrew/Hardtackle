@@ -200,7 +200,7 @@ const Tournament = () => {
     socket.on("disconnect", () => {
       console.log("Disconnected from WebSocket server");
     });
-    navigate(/statistics/$`{code}`);
+    navigate(`/statistics/${code}`);
   };
 
   // Функция отправки данных на сервер с обработкой ошибок и очередью
@@ -209,7 +209,7 @@ const Tournament = () => {
       try {
         let response;
         if (action === 'updateScore') {
-          response = await fetch($`{server_url}/api/update-score`, {
+          response = await fetch(`${server_url}/api/update-score`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -217,7 +217,7 @@ const Tournament = () => {
             body: JSON.stringify(data),
           });
         } else if (action === 'updateApproveState') {
-          response = await fetch($`{server_url}/api/update-approve-state`, {
+          response = await fetch(`${server_url}/api/update-approve-state`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
