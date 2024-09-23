@@ -180,7 +180,7 @@ const Tournament = () => {
       socket.off('disconnect', handleDisconnect);
       socket.off('reconnect', handleReconnect);
     };
-  }, [userData, playerScoreInput, activeCircle, code]);
+  }, [userData, activeCircle]);
 
   // Функция обработки повторного подключения
   const handleReconnection = () => {
@@ -221,6 +221,8 @@ const Tournament = () => {
       const action = unsentActionsQueueRef.current.shift();
       await action();
     }
+    // Добавим задержку и обновление данных с сервера
+    setTimeout(fetchLatestDataFromServer, 500);
   };
 
   // Функция получения последних данных с сервера
@@ -279,9 +281,12 @@ const Tournament = () => {
           body: JSON.stringify(data),
         });
       }
-
+  
       if (response.ok) {
         console.log(`${action} успешно отправлено на сервер`);
+        // После успешной отправки данных обновляем состояние
+        // Можно вызвать fetchLatestDataFromServer или обновить состояние вручную
+        await fetchLatestDataFromServer();
       } else {
         throw new Error(`Сервер вернул ошибку при отправке ${action}`);
       }
@@ -429,7 +434,7 @@ const Tournament = () => {
                       onChange={handleScoreInputChange}
                       className="scoreInputActive"
                     />
-                    <button onClick={handleEnterButtonClick} className="enterButton">Enter</button>
+                    <button onClick={handleEnterButtonClick} className="enterButton">OK</button>
                     </>
                 ) : (
                     <input
