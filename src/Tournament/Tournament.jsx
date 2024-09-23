@@ -1,19 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import vectorImage from './images/Vector.png';
 import { io } from 'socket.io-client';
 import './Tournament.css';
 
 const server_url = process.env.REACT_APP_API_URL;
-
-const socket = io(`${server_url}`, {
-  transports: ['websocket', 'polling'],
-  secure: true,
-});
-
-socket.on("connect", () => {
-  console.log("Connected to WebSocket server");
-});
 
 const Tournament = () => {
   const { code } = useParams();
@@ -31,6 +22,26 @@ const Tournament = () => {
   // Используем useRef для хранения очереди несообщенных действий
   const unsentActionsQueueRef = useRef([]);
 
+  // Создаем реф для сокета
+  const socketRef = useRef(null);
+
+  useEffect(() => {
+    // Создаем соединение с сокетом только один раз при монтировании компонента
+    socketRef.current = io(`${server_url}`, {
+      transports: ['websocket', 'polling'],
+      secure: true,
+    });
+
+    socketRef.current.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    return () => {
+      // Отключаем сокет при размонтировании компонента
+      socketRef.current.disconnect();
+    };
+  }, []);
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -40,12 +51,18 @@ const Tournament = () => {
         }
         const data = await response.json();
         setUserData(data);
-        if (state && state.activeCircle && data.circles.find(circle => circle.number === state.activeCircle)) {
-          const newActiveCircle = data.circles.find(circle => circle.number === state.activeCircle);
+        if (
+          state &&
+          state.activeCircle &&
+          data.circles.find((circle) => circle.number === state.activeCircle)
+        ) {
+          const newActiveCircle = data.circles.find(
+            (circle) => circle.number === state.activeCircle
+          );
           setActiveCircle(newActiveCircle);
           setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
         } else {
-          const newActiveCircle = data.circles.find(circle => circle.status === 'active');
+          const newActiveCircle = data.circles.find((circle) => circle.status === 'active');
           if (newActiveCircle) {
             setActiveCircle(newActiveCircle);
             setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
@@ -65,20 +82,33 @@ const Tournament = () => {
   }, [code, state]);
 
   useEffect(() => {
+    const socket = socketRef.current;
+
     // Обработчики событий сокета для обновления данных пользователя
     const handleUserUpdated = (data) => {
       const { updatedUserData, activeCircleNumber } = data;
       if (userData && userData.code === updatedUserData.code) {
         setUserData(updatedUserData);
-        const updatedCircle = updatedUserData.circles.find(c => c.number === activeCircleNumber);
+        const updatedCircle = updatedUserData.circles.find((c) => c.number === activeCircleNumber);
         setActiveCircle(updatedCircle);
         setPlayerScoreInput(updatedCircle.playerGame.fishCount);
       } else if (userData) {
-        const currUpdatedActiveCircle = updatedUserData.circles.find(circle => circle.number === activeCircleNumber && circle.opponentGame.number === userData.player_id && circle.status === 'active');
+        const currUpdatedActiveCircle = updatedUserData.circles.find(
+          (circle) =>
+            circle.number === activeCircleNumber &&
+            circle.opponentGame.number === userData.player_id &&
+            circle.status === 'active'
+        );
         let number = activeCircle?.number;
         if (currUpdatedActiveCircle) {
-          const updatedCircles = userData.circles.map(circle => {
-            const updatedCircle = updatedUserData.circles.find(c => c.status === "active" && c.opponentGame.number === circle.playerGame.number && circle.opponentGame.number === c.playerGame.number && circle.status === 'active');
+          const updatedCircles = userData.circles.map((circle) => {
+            const updatedCircle = updatedUserData.circles.find(
+              (c) =>
+                c.status === 'active' &&
+                c.opponentGame.number === circle.playerGame.number &&
+                circle.opponentGame.number === c.playerGame.number &&
+                circle.status === 'active'
+            );
             if (updatedCircle) {
               number = circle.number;
               return {
@@ -92,16 +122,21 @@ const Tournament = () => {
                   ...circle.playerGame,
                   fishCount: updatedCircle.opponentGame.fishCount,
                   approveState: updatedCircle.opponentGame.approveState,
-                }
+                },
               };
             }
             return circle;
           });
-          setUserData(prevUserData => ({
+          setUserData((prevUserData) => ({
             ...prevUserData,
             circles: updatedCircles,
           }));
-          const newActiveCircle = updatedCircles.find(circle => circle.opponentGame.number === currUpdatedActiveCircle.playerGame.number && circle.playerGame.number === currUpdatedActiveCircle.opponentGame.number && circle.status === 'active');
+          const newActiveCircle = updatedCircles.find(
+            (circle) =>
+              circle.opponentGame.number === currUpdatedActiveCircle.playerGame.number &&
+              circle.playerGame.number === currUpdatedActiveCircle.opponentGame.number &&
+              circle.status === 'active'
+          );
           setActiveCircle(newActiveCircle);
           setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
         }
@@ -109,21 +144,20 @@ const Tournament = () => {
     };
 
     const handleAllUsersUpdated = (updatedUsersData) => {
-      const currentUser = updatedUsersData.find(user => user.code === code);
+      const currentUser = updatedUsersData.find((user) => user.code === code);
       if (currentUser) {
         setUserData(currentUser);
-        let currUpdatedActiveCircle = currentUser.circles.find(circle => circle.status === 'active');
+        let currUpdatedActiveCircle = currentUser.circles.find(
+          (circle) => circle.status === 'active'
+        );
         if (!currUpdatedActiveCircle) {
-          currUpdatedActiveCircle = currentUser.circles.find(circle => circle.number === 1);
+          currUpdatedActiveCircle = currentUser.circles.find((circle) => circle.number === 1);
         }
         setActiveCircle(currUpdatedActiveCircle);
         setPlayerScoreInput(currUpdatedActiveCircle.playerGame.fishcount);
         console.log(playerScoreInput);
       }
     };
-
-    socket.on('allUsersUpdated', handleAllUsersUpdated);
-    socket.on('userUpdated', handleUserUpdated);
 
     const handleDisconnect = () => {
       console.log('Disconnected from server');
@@ -134,6 +168,9 @@ const Tournament = () => {
       handleReconnection();
     };
 
+    socket.on('allUsersUpdated', handleAllUsersUpdated);
+    socket.on('userUpdated', handleUserUpdated);
+
     socket.on('disconnect', handleDisconnect);
     socket.on('reconnect', handleReconnect);
 
@@ -143,7 +180,7 @@ const Tournament = () => {
       socket.off('disconnect', handleDisconnect);
       socket.off('reconnect', handleReconnect);
     };
-  }, []);
+  }, [userData, playerScoreInput, activeCircle, code]);
 
   // Функция обработки повторного подключения
   const handleReconnection = () => {
@@ -151,18 +188,38 @@ const Tournament = () => {
     fetchLatestDataFromServer();
   };
 
+  // Добавляем обработчики событий 'online' и 'offline'
+  useEffect(() => {
+    function handleOnline() {
+      console.log('Интернет подключен');
+      handleReconnection();
+    }
+
+    function handleOffline() {
+      console.log('Интернет отключен');
+    }
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   useEffect(() => {
     if (activeCircle) {
       setPlayerScoreInput(activeCircle.playerGame.fishCount);
       setPreviousScoreInput(activeCircle.playerGame.fishCount);
     }
   }, [activeCircle]);
-  
+
   // Функция повторной отправки несообщенных действий
-  const resendUnsentActions = () => {
+  const resendUnsentActions = async () => {
     while (unsentActionsQueueRef.current.length > 0) {
       const action = unsentActionsQueueRef.current.shift();
-      action();
+      await action();
     }
   };
 
@@ -184,7 +241,7 @@ const Tournament = () => {
 
   // Функция обновления активного круга
   const updateActiveCircle = (data) => {
-    const newActiveCircle = data.circles.find(circle => circle.status === 'active') || data.circles[0];
+    const newActiveCircle = data.circles.find((circle) => circle.status === 'active') || data.circles[0];
     setActiveCircle(newActiveCircle);
     setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
   };
@@ -195,45 +252,41 @@ const Tournament = () => {
   };
 
   const navigateToTournament = () => {
-    socket.on("disconnect", () => {
-      console.log("Disconnected from WebSocket server");
+    socketRef.current.on('disconnect', () => {
+      console.log('Disconnected from WebSocket server');
     });
     navigate(`/statistics/${code}`);
   };
 
   // Функция отправки данных на сервер с обработкой ошибок и очередью
   const sendDataToServer = async (action, data) => {
-    if (navigator.onLine) {
-      try {
-        let response;
-        if (action === 'updateScore') {
-          response = await fetch(`${server_url}/api/update-score`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-          });
-        } else if (action === 'updateApproveState') {
-          response = await fetch(`${server_url}/api/update-approve-state`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-          });
-        }
-        if (response.ok) {
-          console.log(`${action} successfully sent to server`);
-        } else {
-          console.error(`Failed to send ${action} to server`);
-          unsentActionsQueueRef.current.push(() => sendDataToServer(action, data));
-        }
-      } catch (error) {
-        console.error('Error sending ${action} to server:', error);
-        unsentActionsQueueRef.current.push(() => sendDataToServer(action, data));
+    try {
+      let response;
+      if (action === 'updateScore') {
+        response = await fetch(`${server_url}/api/update-score`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+      } else if (action === 'updateApproveState') {
+        response = await fetch(`${server_url}/api/update-approve-state`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
       }
-    } else {
+
+      if (response.ok) {
+        console.log(`${action} успешно отправлено на сервер`);
+      } else {
+        throw new Error(`Сервер вернул ошибку при отправке ${action}`);
+      }
+    } catch (error) {
+      console.error(`Ошибка при отправке ${action}:`, error);
       unsentActionsQueueRef.current.push(() => sendDataToServer(action, data));
     }
   };
@@ -241,17 +294,20 @@ const Tournament = () => {
   // Модифицированная функция обновления состояния подтверждения
   const updateApproveState = async () => {
     if (
-        !activeCircle ||
-        activeCircle.status !== "active" ||
-        !userData ||
-        typeof activeCircle.playerGame.fishCount !== 'number' ||
-        isNaN(activeCircle.playerGame.fishCount) ||
-        typeof activeCircle.opponentGame.fishCount !== 'number' ||
-        isNaN(activeCircle.opponentGame.fishCount)
-    ) return;
+      !activeCircle ||
+      activeCircle.status !== 'active' ||
+      !userData ||
+      typeof activeCircle.playerGame.fishCount !== 'number' ||
+      isNaN(activeCircle.playerGame.fishCount) ||
+      typeof activeCircle.opponentGame.fishCount !== 'number' ||
+      isNaN(activeCircle.opponentGame.fishCount)
+    )
+      return;
 
     // Обновляем локальные данные
-    const activeCircleIndex = userData.circles.findIndex(circle => circle.number === activeCircle.number && circle.status === 'active');
+    const activeCircleIndex = userData.circles.findIndex(
+      (circle) => circle.number === activeCircle.number && circle.status === 'active'
+    );
     if (activeCircleIndex !== -1) {
       let updatedUserData = { ...userData };
       // Подготавливаем данные для отправки
@@ -280,22 +336,24 @@ const Tournament = () => {
     } else {
       newPlayerScoreInput = parseInt(playerScoreInput, 10);
     }
-  
+
     if (newPlayerScoreInput !== previousScoreInput) {
-      const activeCircleIndex = userData.circles.findIndex(circle => circle.number === activeCircle.number && circle.status === 'active');
+      const activeCircleIndex = userData.circles.findIndex(
+        (circle) => circle.number === activeCircle.number && circle.status === 'active'
+      );
       if (activeCircleIndex !== -1) {
         let updatedUserData = { ...userData };
         updatedUserData.circles[activeCircleIndex].playerGame.fishCount = newPlayerScoreInput;
         setPlayerScoreInput(newPlayerScoreInput);
         setUserData(updatedUserData);
         setActiveCircle(updatedUserData.circles[activeCircleIndex]);
-  
+
         // Подготовка данных для отправки
         const dataToSend = { userData: updatedUserData, activeCircleNumber: activeCircle.number };
-  
+
         // Отправка данных на сервер
         sendDataToServer('updateScore', dataToSend);
-  
+
         // Обновляем previousScoreInput
         setPreviousScoreInput(newPlayerScoreInput);
       }
