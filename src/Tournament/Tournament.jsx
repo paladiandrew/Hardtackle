@@ -143,7 +143,7 @@ const Tournament = () => {
       socket.off('disconnect', handleDisconnect);
       socket.off('reconnect', handleReconnect);
     };
-  }, [userData, playerScoreInput, activeCircle, code]);
+  }, []);
 
   // Функция обработки повторного подключения
   const handleReconnection = () => {
