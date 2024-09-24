@@ -16,6 +16,7 @@ const Tournament = () => {
   const [activeCircle, setActiveCircle] = useState(null);
   const [playerScoreInput, setPlayerScoreInput] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -337,33 +338,39 @@ const Tournament = () => {
   const handleEnterButtonClick = () => {
     let newPlayerScoreInput;
     if (playerScoreInput === '' || isNaN(playerScoreInput)) {
-      newPlayerScoreInput = 0;
+        newPlayerScoreInput = 0;
     } else {
-      newPlayerScoreInput = parseInt(playerScoreInput, 10);
+        newPlayerScoreInput = parseInt(playerScoreInput, 10);
     }
 
     if (newPlayerScoreInput !== previousScoreInput) {
-      const activeCircleIndex = userData.circles.findIndex(
-        (circle) => circle.number === activeCircle.number && circle.status === 'active'
-      );
-      if (activeCircleIndex !== -1) {
-        let updatedUserData = { ...userData };
-        updatedUserData.circles[activeCircleIndex].playerGame.fishCount = newPlayerScoreInput;
-        setPlayerScoreInput(newPlayerScoreInput);
-        setUserData(updatedUserData);
-        setActiveCircle(updatedUserData.circles[activeCircleIndex]);
+        const activeCircleIndex = userData.circles.findIndex(
+            (circle) => circle.number === activeCircle.number && circle.status === 'active'
+        );
+        if (activeCircleIndex !== -1) {
+            let updatedUserData = { ...userData };
+            updatedUserData.circles[activeCircleIndex].playerGame.fishCount = newPlayerScoreInput;
+            setPlayerScoreInput(newPlayerScoreInput);
+            setUserData(updatedUserData);
+            setActiveCircle(updatedUserData.circles[activeCircleIndex]);
 
-        // Подготовка данных для отправки
-        const dataToSend = { userData: updatedUserData, activeCircleNumber: activeCircle.number };
+            // Prepare data for sending
+            const dataToSend = { userData: updatedUserData, activeCircleNumber: activeCircle.number };
 
-        // Отправка данных на сервер
-        sendDataToServer('updateScore', dataToSend);
+            // Send data to server
+            sendDataToServer('updateScore', dataToSend);
 
-        // Обновляем previousScoreInput
-        setPreviousScoreInput(newPlayerScoreInput);
-      }
+            // Update previousScoreInput
+            setPreviousScoreInput(newPlayerScoreInput);
+
+            // End editing
+            setIsEditing(false);
+        }
+    } else {
+        // Even if the score hasn't changed, end editing
+        setIsEditing(false);
     }
-  };
+};
 
   if (loading) {
     return <div>Loading...</div>;
@@ -422,20 +429,29 @@ const Tournament = () => {
             <div className="whiteRectangleLeft">
                 <div className="playerNumberLeft">{`#${activeCircle?.playerGame.number}`}</div>
             </div>
-            <div className={`blueRectangleLeft ${activeCircle?.status === "completed" ? 'completed' : activeCircle?.status === "inactive" ? 'inactive' : 'active'}`}>
-                {activeCircle?.status === "completed" || activeCircle?.status === "inactive" ? (
-                    <div className="score">{activeCircle?.playerGame.fishCount}</div>
+            <div className={`blueRectangleLeft ${activeCircle?.status === "completed" ? 'completed' : activeCircle?.status === "inactive" ? 'inactive' : 'active'} ${isEditing ? 'editing' : ''}`}>
+            {activeCircle?.status === "completed" || activeCircle?.status === "inactive" ? (
+             <div className="score">{activeCircle?.playerGame.fishCount}</div>
                 ) : (activeCircle?.playerGame.approveState === 1 || activeCircle?.playerGame.approveState === 2) ? (
-                    <>
-                    <input
-                      type="tel"
-                      value={playerScoreInput}
-                      onFocus={() => setPlayerScoreInput('')}
-                      onChange={handleScoreInputChange}
-                      className="scoreInputActive"
-                    />
-                    <button onClick={handleEnterButtonClick} className="enterButton">OK</button>
-                    </>
+                <>
+                <input
+                    type="tel"
+                    value={playerScoreInput}
+                    onFocus={() => {
+                        setPlayerScoreInput('');
+                        setIsEditing(true); // Start editing
+                    }}
+                    onChange={handleScoreInputChange}
+                    onBlur={() => {
+                        // Optionally, handle blur if needed
+                        // setIsEditing(false);
+                        }}
+                        className="scoreInputActive"
+                        />
+                        {isEditing && (
+                            <button onClick={handleEnterButtonClick} className="enterButton">OK</button>
+                        )}
+                </>
                 ) : (
                     <input
                         type="tel"

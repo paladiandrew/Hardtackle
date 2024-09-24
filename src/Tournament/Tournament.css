@@ -395,20 +395,33 @@
     left: 96%;
     z-index: 1;
 } 
-  .enterButton {
+.enterButton {
     position: absolute;
-    width: 100%;
+    width: 30%; /* Adjusted width */
     height: 20%;
-    top: 80%;
-    left: 0%;
+    bottom: 10%; /* Position near the bottom */
+    left: 35%; /* Center horizontally */
     border: none;
     border-radius: 3vh;
     font-size: 2.5vh;
     font-family: 'Arimo';
     color: #fff;
     background-color: #ea5558;
-  }
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.blueRectangleLeft.editing .enterButton {
+    opacity: 1;
+    visibility: visible;
+}
   
   .enterButton:active {
     background-color: #666666;
   }
+  .blueRectangleLeft.editing {
+    transform: scale(1.1);
+}
