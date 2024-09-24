@@ -423,5 +423,6 @@
   }
   .blueRectangleLeft.editing {
     transform: scale(1.4);
+    transform: translate(10%,-10%);
     z-index: 2;
 }
