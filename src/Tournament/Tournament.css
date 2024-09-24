@@ -422,6 +422,6 @@
     background-color: #666666;
   }
   .blueRectangleLeft.editing {
-    transform: scale(1.1) translate(7%, -10%);
+    transform: scale(1.4) translate(7%, -10%);
     z-index: 2;
 }
