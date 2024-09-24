@@ -397,10 +397,9 @@
 } 
 .enterButton {
     position: absolute;
-    width: 30%; /* Adjusted width */
+    width: 100%; /* Adjusted width */
     height: 20%;
-    bottom: 10%; /* Position near the bottom */
-    left: 35%; /* Center horizontally */
+    bottom: 0%; /* Position near the bottom */
     border: none;
     border-radius: 3vh;
     font-size: 2.5vh;
@@ -423,5 +422,6 @@
     background-color: #666666;
   }
   .blueRectangleLeft.editing {
-    transform: scale(1.1);
+    transform: scale(1.4);
+    z-index: 2;
 }
