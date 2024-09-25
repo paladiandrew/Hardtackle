@@ -406,11 +406,6 @@
     font-family: 'Arimo';
     color: #fff;
     background-color: #ea5558;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .blueRectangleLeft.editing .enterButton {
