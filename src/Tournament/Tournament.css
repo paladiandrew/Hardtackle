@@ -421,7 +421,3 @@
   .enterButton:active {
     background-color: #666666;
   }
-  .blueRectangleLeft.editing {
-    transform: scale(1.25) translate(6%, -10%);
-    z-index: 2;
-}
