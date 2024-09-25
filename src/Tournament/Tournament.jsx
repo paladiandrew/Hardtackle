@@ -96,7 +96,6 @@ const Tournament = () => {
       } else if (userData) {
         const currUpdatedActiveCircle = updatedUserData.circles.find(
           (circle) =>
-            circle.number === activeCircleNumber &&
             circle.opponentGame.number === userData.player_id &&
             circle.status === 'active'
         );
