@@ -99,7 +99,7 @@ const Tournament = () => {
             const updatedCircle = updatedUserData.circles.find(
               (c) =>
                 c.status === 'active' &&
-                circle.opponentGame.number === c.playerGame.number &&
+                circle.opponentGame.number === c.playerGame.number && circle.playerGame.number === c.opponentGame.number &&
                 circle.status === 'active'
             );
             if (updatedCircle) {
