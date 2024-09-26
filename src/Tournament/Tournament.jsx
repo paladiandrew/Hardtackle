@@ -20,14 +20,11 @@ const Tournament = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Используем useRef для хранения очереди несообщенных действий
   const unsentActionsQueueRef = useRef([]);
 
-  // Создаем реф для сокета
   const socketRef = useRef(null);
 
   useEffect(() => {
-    // Создаем соединение с сокетом только один раз при монтировании компонента
     socketRef.current = io(`${server_url}`, {
       transports: ['websocket', 'polling'],
       secure: true,
@@ -38,7 +35,6 @@ const Tournament = () => {
     });
 
     return () => {
-      // Отключаем сокет при размонтировании компонента
       socketRef.current.disconnect();
     };
   }, []);
@@ -84,8 +80,6 @@ const Tournament = () => {
 
   useEffect(() => {
     const socket = socketRef.current;
-
-    // Обработчики событий сокета для обновления данных пользователя
     const handleUserUpdated = (data) => {
       const { updatedUserData, activeCircleNumber } = data;
       if (userData && userData.code === updatedUserData.code) {
@@ -153,7 +147,6 @@ const Tournament = () => {
           currUpdatedActiveCircle = currentUser.circles.find((circle) => circle.number === 1);
         }
         setActiveCircle(currUpdatedActiveCircle);
-        setPlayerScoreInput(currUpdatedActiveCircle.playerGame.fishCount);
         console.log(playerScoreInput);
       }
     };
@@ -181,13 +174,11 @@ const Tournament = () => {
     };
   }, [userData, activeCircle]);
 
-  // Функция обработки повторного подключения
   const handleReconnection = () => {
     resendUnsentActions();
     fetchLatestDataFromServer();
   };
 
-  // Добавляем обработчики событий 'online' и 'offline'
   useEffect(() => {
     function handleOnline() {
       console.log('Интернет подключен');
@@ -213,18 +204,13 @@ const Tournament = () => {
       setPreviousScoreInput(activeCircle.playerGame.fishCount);
     }
   }, [activeCircle]);
-
-  // Функция повторной отправки несообщенных действий
   const resendUnsentActions = async () => {
     while (unsentActionsQueueRef.current.length > 0) {
       const action = unsentActionsQueueRef.current.shift();
       await action();
     }
-    // Добавим задержку и обновление данных с сервера
     setTimeout(fetchLatestDataFromServer, 500);
   };
-
-  // Функция получения последних данных с сервера
   const fetchLatestDataFromServer = async () => {
     try {
       const response = await fetch(`${server_url}/api/user/${code}`);
@@ -239,8 +225,6 @@ const Tournament = () => {
       console.error('Error fetching latest data:', error);
     }
   };
-
-  // Функция обновления активного круга
   const updateActiveCircle = (data) => {
     const newActiveCircle = data.circles.find((circle) => circle.status === 'active') || data.circles[0];
     setActiveCircle(newActiveCircle);
@@ -258,8 +242,6 @@ const Tournament = () => {
     });
     navigate(`/statistics/${code}`);
   };
-
-  // Функция отправки данных на сервер с обработкой ошибок и очередью
   const sendDataToServer = async (action, data) => {
     try {
       let response;
@@ -283,8 +265,6 @@ const Tournament = () => {
   
       if (response.ok) {
         console.log(`${action} успешно отправлено на сервер`);
-        // После успешной отправки данных обновляем состояние
-        // Можно вызвать fetchLatestDataFromServer или обновить состояние вручную
         await fetchLatestDataFromServer();
       } else {
         throw new Error(`Сервер вернул ошибку при отправке ${action}`);
@@ -295,7 +275,6 @@ const Tournament = () => {
     }
   };
 
-  // Модифицированная функция обновления состояния подтверждения
   const updateApproveState = async () => {
     if (
       !activeCircle ||
@@ -308,21 +287,15 @@ const Tournament = () => {
     )
       return;
 
-    // Обновляем локальные данные
     const activeCircleIndex = userData.circles.findIndex(
       (circle) => circle.number === activeCircle.number && circle.status === 'active'
     );
     if (activeCircleIndex !== -1) {
       let updatedUserData = { ...userData };
-      // Подготавливаем данные для отправки
       const dataToSend = { userData: updatedUserData, activeCircleNumber: activeCircle.number };
-
-      // Отправляем данные на сервер
       sendDataToServer('updateApproveState', dataToSend);
     }
   };
-
-  // Модифицированная функция обработки изменения ввода очков
   const handleScoreInputChange = (e) => {
     let value = e.target.value;
     if (value === '' || isNaN(value) || parseInt(value) > 99) {
@@ -351,21 +324,12 @@ const Tournament = () => {
             setPlayerScoreInput(newPlayerScoreInput);
             setUserData(updatedUserData);
             setActiveCircle(updatedUserData.circles[activeCircleIndex]);
-
-            // Prepare data for sending
             const dataToSend = { userData: updatedUserData, activeCircleNumber: activeCircle.number };
-
-            // Send data to server
             sendDataToServer('updateScore', dataToSend);
-
-            // Update previousScoreInput
             setPreviousScoreInput(newPlayerScoreInput);
-
-            // End editing
             setIsEditing(false);
         }
     } else {
-        // Even if the score hasn't changed, end editing
         setIsEditing(false);
     }
 };
@@ -437,12 +401,10 @@ const Tournament = () => {
                     value={playerScoreInput}
                     onFocus={() => {
                         setPlayerScoreInput('');
-                        setIsEditing(true); // Start editing
+                        setIsEditing(true);
                     }}
                     onChange={handleScoreInputChange}
                     onBlur={() => {
-                        // Optionally, handle blur if needed
-                        // setIsEditing(false);
                         }}
                         className="scoreInputActive"
                         />
