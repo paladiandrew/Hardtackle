@@ -147,6 +147,7 @@ const Tournament = () => {
           currUpdatedActiveCircle = currentUser.circles.find((circle) => circle.number === 1);
         }
         setActiveCircle(currUpdatedActiveCircle);
+        setTimeout(setPlayerScoreInput(currUpdatedActiveCircle.playerGame.fishCount), 10);
         console.log(playerScoreInput);
       }
     };
