@@ -145,9 +145,10 @@ const Tournament = () => {
         );
         if (!currUpdatedActiveCircle) {
           currUpdatedActiveCircle = currentUser.circles.find((circle) => circle.number === 1);
-        }
-        setActiveCircle(currUpdatedActiveCircle);
-        setTimeout(setPlayerScoreInput(currUpdatedActiveCircle.playerGame.fishCount), 10);
+        }    
+        setTimeout(
+            setActiveCircle(currUpdatedActiveCircle)
+        , 10);
         console.log(playerScoreInput);
       }
     };
@@ -210,7 +211,7 @@ const Tournament = () => {
       const action = unsentActionsQueueRef.current.shift();
       await action();
     }
-    setTimeout(fetchLatestDataFromServer, 500);
+    setTimeout(fetchLatestDataFromServer, 300);
   };
   const fetchLatestDataFromServer = async () => {
     try {
