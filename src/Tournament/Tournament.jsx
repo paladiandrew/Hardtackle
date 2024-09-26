@@ -149,7 +149,7 @@ const Tournament = () => {
         setTimeout(
             setActiveCircle(currUpdatedActiveCircle)
         , 10);
-        console.log(playerScoreInput);
+
       }
     };
 
@@ -204,6 +204,7 @@ const Tournament = () => {
     if (activeCircle) {
       setPlayerScoreInput(activeCircle.playerGame.fishCount);
       setPreviousScoreInput(activeCircle.playerGame.fishCount);
+      console.log(playerScoreInput);
     }
   }, [activeCircle]);
   const resendUnsentActions = async () => {
