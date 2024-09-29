@@ -131,7 +131,6 @@ const Tournament = () => {
               circle.status === 'active'
           );
           setActiveCircle(newActiveCircle);
-          setPlayerScoreInput(newActiveCircle.playerGame.fishCount);
         }
       }
     };
@@ -202,6 +201,9 @@ const Tournament = () => {
 
   useEffect(() => {
     if (activeCircle) {
+      if (activeCircle.playerGame.approveState === 3 || activeCircle.playerGame.approveState === 4) {
+        setIsEditing(false);
+      }
       setPlayerScoreInput(activeCircle.playerGame.fishCount);
       setPreviousScoreInput(activeCircle.playerGame.fishCount);
       console.log(playerScoreInput);
@@ -324,12 +326,10 @@ const Tournament = () => {
         if (activeCircleIndex !== -1) {
             let updatedUserData = { ...userData };
             updatedUserData.circles[activeCircleIndex].playerGame.fishCount = newPlayerScoreInput;
-            setPlayerScoreInput(newPlayerScoreInput);
             setUserData(updatedUserData);
             setActiveCircle(updatedUserData.circles[activeCircleIndex]);
             const dataToSend = { userData: updatedUserData, activeCircleNumber: activeCircle.number };
             sendDataToServer('updateScore', dataToSend);
-            setPreviousScoreInput(newPlayerScoreInput);
             setIsEditing(false);
         }
     } else {
@@ -346,94 +346,106 @@ const Tournament = () => {
   }
 
     return (
-        <article className="playerCard">
-            <div className='kostul'></div>
-            <div className='kostul2'></div>
-            <div className='kostul3'></div>
-            <div className="mainRectangle"></div>
-            <div className="header"></div>
-            <div className="triangle"><span>VS</span></div>
-            <div className={`redRectangle ${activeCircle?.status === "completed" ? 'completed' : activeCircle?.status === "inactive" ? 'inactive' : ''}`}>
-                {`#${activeCircle?.opponentGame.number} ${activeCircle?.opponentGame.name}: ${activeCircle?.opponentGame.total_points} pts`}
+    <article className="playerCard">
+        {isEditing && <div className="blurOverlay"></div>}
+
+        <div className='kostul'></div>
+        <div className='kostul2'></div>
+        <div className='kostul3'></div>
+        <div className="mainRectangle"></div>
+        <div className="header"></div>
+        <div className="triangle"><span>VS</span></div>
+        <div className={`redRectangle ${activeCircle?.status === "completed" ? 'completed' : activeCircle?.status === "inactive" ? 'inactive' : ''}`}>
+            {`#${activeCircle?.opponentGame.number} ${activeCircle?.opponentGame.name}: ${activeCircle?.opponentGame.total_points} pts`}
+        </div>
+        <div className="sectorInfo">
+            {`Sector ${activeCircle?.playerGame.sector}${(activeCircle?.playerGame.number % 2 === activeCircle?.index_circle % 2) ? 'R' : 'L'}`}
+        </div>
+        <div
+            className={`bottomRectangle ${activeCircle?.status === "inactive" || activeCircle?.status === "completed" ? 'inactive' : `state-${activeCircle?.playerGame.approveState}`}`}
+            onClick={updateApproveState}
+        >
+            {activeCircle?.status === "completed" ? `+ ${activeCircle?.playerGame.points} Pts` : activeCircle?.status === "inactive" ? 'Approve' : activeCircle?.playerGame.approveState === 1 ? 'Approve' : activeCircle.playerGame.approveState === 2 ? 'Disapprove' : activeCircle.playerGame.approveState === 3 ? 'Approve' : 'Disapprove'}
+        </div>
+        <div className="playerNameContainer">
+            <div className="playerName">{`#${activeCircle?.playerGame.number} ${activeCircle?.playerGame.name}: ${activeCircle?.playerGame.total_points} pts`}</div>
+            <img src={vectorImage} alt='' className="vectorImage" onClick={navigateToTournament} />
+        </div>
+        <div className="circleContainerlayout">
+            <div className="thickerWhiteLine"></div>
+            <div className="circleContainer">
+                {userData.circles.map((circle) => (
+                    <div
+                        key={circle.number}
+                        className={`circle ${circle.status} ${
+                            activeCircle?.number === circle.number ? 'highlighted' : ''
+                        }`}
+                        onClick={() => handleCircleClick(circle)}
+                    >
+                        <span>{circle.index_circle}</span>
+                        <span>
+                            {circle.playerGame.fishCount}:{circle.opponentGame.fishCount}
+                        </span>
+                        {activeCircle?.number === circle.number && (
+                            <div className="triangle-under-circle"></div>
+                        )}
+                    </div>
+                ))}
             </div>
-            <div className="sectorInfo">
-                {`Sector ${activeCircle?.playerGame.sector}${(activeCircle?.playerGame.number % 2 === activeCircle?.index_circle % 2) ? 'R' : 'L'}`}
-            </div>
-            <div
-                className={`bottomRectangle ${activeCircle?.status === "inactive" || activeCircle?.status === "completed" ? 'inactive' : `state-${activeCircle?.playerGame.approveState}`}`}
-                onClick={updateApproveState}
-            >
-                {activeCircle?.status === "completed" ? `+ ${activeCircle?.playerGame.points} Pts` : activeCircle?.status === "inactive" ? 'Approve' : activeCircle?.playerGame.approveState === 1 ? 'Approve' : activeCircle.playerGame.approveState === 2 ? 'Disapprove' : activeCircle.playerGame.approveState === 3 ? 'Approve' : 'Disapprove'}
-            </div>
-            <div className="playerNameContainer">
-                <div className="playerName">{`#${activeCircle?.playerGame.number} ${activeCircle?.playerGame.name}: ${activeCircle?.playerGame.total_points} pts`}</div>
-                <img src={vectorImage} alt='' className="vectorImage" onClick={navigateToTournament} />
-            </div>
-            <div className="circleContainerlayout">
-                <div className="thickerWhiteLine"></div>
-                <div className="circleContainer">
-                    {userData.circles.map((circle) => (
-                        <div
-                            key={circle.number}
-                            className={`circle ${circle.status} ${
-                                activeCircle?.number === circle.number ? 'highlighted' : ''
-                            }`}
-                            onClick={() => handleCircleClick(circle)}
-                        >
-                            <span>{circle.index_circle}</span>
-                            <span>
-                                {circle.playerGame.fishCount}:{circle.opponentGame.fishCount}
-                            </span>
-                            {activeCircle?.number === circle.number && (
-                                <div className="triangle-under-circle"></div>
-                            )}
-                        </div>
-                    ))}
-                </div>
-            </div>
-            <div className="whiteRectangleLeft">
+        </div>
+
+        {/* Перемещаем whiteRectangleLeft и playerNumberLeft между блюром и blueRectangleLeft */}
+        {isEditing && (
+            <div className={`whiteRectangleLeft isEditing`}>
                 <div className="playerNumberLeft">{`#${activeCircle?.playerGame.number}`}</div>
             </div>
-            <div className={`blueRectangleLeft ${activeCircle?.status === "completed" ? 'completed' : activeCircle?.status === "inactive" ? 'inactive' : 'active'}`}>
+        )}
+
+        <div className={`blueRectangleLeft ${activeCircle?.status === "completed" ? 'completed' : activeCircle?.status === "inactive" ? 'inactive' : 'active'} ${isEditing ? 'fullscreen-active' : ''}`}>
             {activeCircle?.status === "completed" || activeCircle?.status === "inactive" ? (
-             <div className="score">{activeCircle?.playerGame.fishCount}</div>
-                ) : (activeCircle?.playerGame.approveState === 1 || activeCircle?.playerGame.approveState === 2) ? (
-                <>
+                <div className="score">{activeCircle?.playerGame.fishCount}</div>
+            ) : (activeCircle?.playerGame.approveState === 1 || activeCircle?.playerGame.approveState === 2) ? (
+            <>
                 <input
                     type="tel"
                     value={playerScoreInput}
                     onFocus={() => {
-                        setPlayerScoreInput('');
                         setIsEditing(true);
+                        setPlayerScoreInput('');
                     }}
                     onChange={handleScoreInputChange}
-                    onBlur={() => {
-                        }}
-                        className="scoreInputActive"
-                        />
-                        {isEditing && (
-                            <button onClick={handleEnterButtonClick} className="enterButton">OK</button>
-                        )}
-                </>
-                ) : (
-                    <input
-                        type="tel"
-                        value={playerScoreInput}
-                        readOnly
-                        className="scoreInput"
-                    />
-                )
-            }
+                    className="scoreInputActive"
+                />
+                {isEditing && (
+                    <button onClick={handleEnterButtonClick} className="enterButton">OK</button>
+                )}
+            </>
+            ) : (
+                <input
+                    type="tel"
+                    value={playerScoreInput}
+                    readOnly
+                    className="scoreInput"
+                />
+            )}
+        </div>
+
+        {/* Если не редактируем, отображаем whiteRectangleLeft в обычном месте */}
+        {!isEditing && (
+            <div className="whiteRectangleLeft">
+                <div className="playerNumberLeft">{`#${activeCircle?.playerGame.number}`}</div>
             </div>
-                <div className="whiteRectangleRight">
-                    <div className="playerNumberRight">{`#${activeCircle?.opponentGame.number}`}</div>
-                </div>
-                <div className={`blueRectangleRight ${activeCircle?.status === "completed" ? 'completed' : activeCircle?.status === "inactive" ? 'inactive' : ''}`}>
-                    <div className="score">
-                    {activeCircle?.opponentGame.fishCount}
-                </div>
+        )}
+
+        <div className="whiteRectangleRight">
+            <div className="playerNumberRight">{`#${activeCircle?.opponentGame.number}`}</div>
+        </div>
+        <div className={`blueRectangleRight ${activeCircle?.status === "completed" ? 'completed' : activeCircle?.status === "inactive" ? 'inactive' : ''}`}>
+            <div className="score">
+                {activeCircle?.opponentGame.fishCount}
             </div>
-        </article>
+        </div>
+    </article>
     );
 };
 
