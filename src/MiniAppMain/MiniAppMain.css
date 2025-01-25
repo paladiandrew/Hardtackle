@@ -5,8 +5,25 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-image: url('./images/bg.png'); /* Замените на имя вашего файла */
+    background-image: url('./images/background.jpg');
     background-size: cover;
     background-position: center;
     color: white; /* Цвет текста */
+}
+
+.button {
+    background-color: #ea5558;
+    color: #32404d;
+    border: none;
+    border-radius: 5px;
+    padding: 15px 30px;
+    font-size: 18px;
+    width: 200px;
+    margin: 10px 0; 
+    cursor: pointer;
+    transition: background-color 0.3s; 
+}
+
+.button:hover {
+    background-color: #d94c4f;
 }
