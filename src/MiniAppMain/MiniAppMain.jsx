@@ -1,17 +1,32 @@
-// src/MainScreen/MainScreen.jsx
-import React from "react";
+// src/MiniAppMain.jsx
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import './MiniAppMain.css'; // Импортируем стили
+import "./MiniAppMain.css";
 
 export default function MiniAppMain() {
+    useEffect(() => {
+        // Сохраняем Telegram WebApp данные в localStorage
+        if (window.Telegram && window.Telegram.WebApp) {
+            localStorage.setItem("tgUser", JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user));
+        }
+    }, []);
+
     return (
-        <div className="container">
-            <Link to="/registration">
-                <button className="button">Регистрация</button>
-            </Link>
-            <Link to="/past-results">
-                <button className="button">Результаты прошлых этапов</button>
-            </Link>
+        <div className="miniapp-container">
+            <div className="buttons-container">
+                <Link to="/registration" className="miniapp-button">
+                    Регистрация
+                </Link>
+                <Link to="/participants" className="miniapp-button">
+                    Список участников
+                </Link>
+                <a href="https://htcup.ru" className="miniapp-button external">
+                    Турнир
+                </a>
+                <Link to="/payment" className="miniapp-button">
+                    Оплата
+                </Link>
+            </div>
         </div>
     );
 }

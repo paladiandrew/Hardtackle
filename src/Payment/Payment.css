@@ -1,0 +1,96 @@
+/* src/Payment/Payment.css */
+.payment-container {
+    font-family: Arial, sans-serif;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+}
+
+.payment-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.back-button {
+    background-color: #ea5558;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    margin-right: 10px;
+}
+
+.back-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.payment-title {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0;
+    font-size: 20px;
+}
+
+.participants-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.participant-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.participant-item.selected {
+    background-color: #f0f0f0;
+    border: 1px solid #ea5558;
+}
+
+.radio-button {
+    margin-right: 15px;
+    accent-color: #ea5558;
+}
+
+.participant-id {
+    font-weight: bold;
+    margin-right: 15px;
+    min-width: 30px;
+}
+
+.participant-name {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.payment-button {
+    background-color: #ea5558;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.payment-button.disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}

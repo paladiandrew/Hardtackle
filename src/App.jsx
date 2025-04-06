@@ -7,6 +7,7 @@ import Registration from "./Registration/Registration";
 import ParticipantsList from "./ParticipantsList/ParticipantsList";
 import PastResults from "./PastResults/PastResults";
 import MiniAppMain from "./MiniAppMain/MiniAppMain";
+import Payment from "./Payment/Payment";
 
 export default function App() {
     console.log('App started');
@@ -20,6 +21,7 @@ export default function App() {
                 <Route path="/past-results" element={<PastResults />} />
                 <Route path="/tournament/:code" element={<Tournament />} />
                 <Route path="/statistics/:code" element={<Statistics />} />
+                <Route path="/payment" element={<Payment />} />
             </Routes>
         </Router>
     );

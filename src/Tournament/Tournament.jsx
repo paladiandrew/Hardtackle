@@ -23,10 +23,16 @@ const Tournament = () => {
   const unsentActionsQueueRef = useRef([]);
 
   const socketRef = useRef(null);
+  
 
   useEffect(() => {
     socketRef.current = io(`${server_url}`, {
       transports: ['websocket', 'polling'],
+      reconnection: true,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    randomizationFactor: 0.5,
       secure: true,
     });
 

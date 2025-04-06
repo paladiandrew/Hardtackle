@@ -1,29 +1,50 @@
-/* src/MainScreen/MiniAppMain.css */
-.container {
+/* src/MiniAppMain.css */
+.miniapp-container {
+    font-family: Arial, sans-serif;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-image: url('./images/bg.png');
-    background-size: cover;
-    background-position: center;
-    color: white; /* Цвет текста */
+    text-align: center;
 }
 
-.button {
+.miniapp-title {
+    font-size: 24px;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.miniapp-button {
     background-color: #ea5558;
-    color: #32404d;
-    border: none;
-    border-radius: 5px;
-    padding: 15px 30px;
-    font-size: 18px;
-    width: 200px;
-    margin: 10px 0; 
-    cursor: pointer;
-    transition: background-color 0.3s; 
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 16px;
+    text-align: center;
+    transition: background-color 0.3s;
 }
 
-.button:hover {
-    background-color: #d94c4f;
+.miniapp-button:hover {
+    background-color: #d04a4d;
+}
+
+.miniapp-button.external {
+    background-color: #9c27b0;
+}
+
+.miniapp-button.external:hover {
+    background-color: #7b1fa2;
 }
