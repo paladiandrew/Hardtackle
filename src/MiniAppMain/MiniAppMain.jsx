@@ -5,7 +5,6 @@ import "./MiniAppMain.css";
 
 export default function MiniAppMain() {
     useEffect(() => {
-        // Сохраняем Telegram WebApp данные в localStorage
         if (window.Telegram && window.Telegram.WebApp) {
             localStorage.setItem("tgUser", JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user));
         }
