@@ -1,4 +1,3 @@
-// src/ParticipantsList/ParticipantsList.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import backImage from "./images/back.png";
@@ -75,8 +74,8 @@ export default function ParticipantsList() {
             )}
             
             <div className="participants-header">
-                <button className="back-button" onClick={handleBack}>
-                    <img src={backImage} alt="Back" className="back-icon" />
+                <button className="participants-back-button" onClick={handleBack}>
+                    <img src={backImage} alt="Back" className="participants-back-icon" />
                 </button>
                 <h2 className="participants-title">Список участников</h2>
             </div>

@@ -60,33 +60,33 @@ export default function Payment() {
     return (
         <div className="payment-container">
             <div className="payment-header">
-                <button className="back-button" onClick={handleBack}>
-                    <img src={backImage} alt="Back" className="back-icon" />
+                <button className="payment-back-button" onClick={handleBack}>
+                    <img src={backImage} alt="Back" className="payment-back-icon" />
                 </button>
                 <h2 className="payment-title">Оплата участия</h2>
             </div>
             
-            <div className="participants-list">
+            <div className="payment-participants-list">
                 {participants.map((participant) => (
                     <div 
                         key={participant.id} 
-                        className={`participant-item ${selectedParticipant === participant.id ? "selected" : ""}`}
+                        className={`payment-participant-item ${selectedParticipant === participant.id ? "payment-selected" : ""}`}
                         onClick={() => handleParticipantSelect(participant.id)}
                     >
                         <input
                             type="radio"
                             checked={selectedParticipant === participant.id}
                             onChange={() => handleParticipantSelect(participant.id)}
-                            className="radio-button"
+                            className="payment-radio-button"
                         />
-                        <span className="participant-id">{participant.id + 1}</span>
-                        <span className="participant-name">{participant.fullName}</span>
+                        <span className="payment-participant-id">{participant.id + 1}</span>
+                        <span className="payment-participant-name">{participant.fullName}</span>
                     </div>
                 ))}
             </div>
             
             <button 
-                className={`payment-button ${!selectedParticipant ? "disabled" : ""}`}
+                className={`payment-button ${!selectedParticipant ? "payment-disabled" : ""}`}
                 onClick={handlePayment}
                 disabled={!selectedParticipant}
             >

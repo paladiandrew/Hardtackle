@@ -12,6 +12,7 @@ export default function MiniAppMain() {
 
     return (
         <div className="miniapp-container">
+            <h1 className="tournament-title">Hardtackle Trout Cup</h1>
             <div className="buttons-container">
                 <Link to="/registration" className="miniapp-button">
                     Регистрация
@@ -19,9 +20,6 @@ export default function MiniAppMain() {
                 <Link to="/participants" className="miniapp-button">
                     Список участников
                 </Link>
-                <a href="https://htcup.ru" className="miniapp-button external">
-                    Турнир
-                </a>
                 <Link to="/payment" className="miniapp-button">
                     Оплата
                 </Link>

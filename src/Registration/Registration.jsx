@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import backImage from "./images/back.png";
 import './Registration.css';
@@ -86,11 +86,13 @@ export default function Registration() {
                 </div>
             )}
             
-            <h2 className="registration-header">Регистрация</h2>
-            <div className="registration-body">
-                <Link to="/main" className="back-button">
-                    <img src={backImage} alt='' className="vectorImage"/>
+            <h2 className="registration-header">
+                <Link to="/main" >
+                    <img src={backImage} alt="Назад" className="vectorImage"/>
                 </Link>
+                Регистрация
+            </h2>
+            
                 <input 
                     type="text" 
                     placeholder="Введите ФИО участника"
@@ -105,7 +107,6 @@ export default function Registration() {
                 >
                     Зарегистрировать участника
                 </button>
-            </div>
         </div>
     );
 }

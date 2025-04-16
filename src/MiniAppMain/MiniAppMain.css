@@ -3,7 +3,6 @@
     font-family: Arial, sans-serif;
     max-width: 100%;
     margin: 0 auto;
-    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -17,10 +16,14 @@
     position: relative;
 }
 
-.miniapp-title {
-    font-size: 24px;
-    margin-bottom: 40px;
-    color: #333;
+.tournament-title {
+    color: white;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 80px;
+    width: 50%;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .buttons-container {
@@ -44,12 +47,4 @@
 
 .miniapp-button:hover {
     background-color: #d04a4d;
-}
-
-.miniapp-button.external {
-    background-color: #9c27b0;
-}
-
-.miniapp-button.external:hover {
-    background-color: #7b1fa2;
 }

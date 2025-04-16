@@ -2,11 +2,10 @@
     font-family: Arial, sans-serif;
     max-width: 100%;
     margin: 0 auto;
-    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between; /* Распределяем пространство между элементами */
     height: 100vh;
     text-align: center;
     background-image: url('./images/bg.png');
@@ -16,17 +15,44 @@
     position: relative;
 }
 
-.registration-body {
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 400px;
+.registration-header {
+    margin-top: 20px;
+    color: #ddd;
+    width: 100%;
     position: relative;
 }
 
-/* Остальные стили остаются без изменений */
+.vectorImage {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%); 
+    height: 30px; /* Фиксированный размер иконки */
+    width: 30px;
+}
+
+.registration-input {
+    width: 80%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 60%;
+    font-size: 16px;
+}
+
+.registration-button {
+    width: 80%;
+    margin-bottom: 20%;
+    padding: 12px;
+    background-color: #ea5558;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Стили для модального окна подтверждения остаются без изменений */
 .confirmation-overlay {
     position: fixed;
     top: 0;

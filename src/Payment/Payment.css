@@ -2,8 +2,10 @@
 .payment-container {
     font-family: Arial, sans-serif;
     max-width: 100%;
+    height: 100vh;
     margin: 0 auto;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
     background-image: url('./images/bg.png');
     background-size: cover;
     background-position: center;
@@ -14,27 +16,29 @@
 .payment-header {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    padding: 30px;
     position: relative;
 }
 
-.back-button {
+.payment-back-button {
     background-color: #ea5558;
     border: none;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     padding: 0;
-    margin-right: 10px;
+    position: absolute;
+    left: 15px;
+    z-index: 1;
 }
 
-.back-icon {
-    width: 20px;
-    height: 20px;
+.payment-back-icon {
+    width: 16px;
+    height: 16px;
 }
 
 .payment-title {
@@ -42,16 +46,21 @@
     text-align: center;
     margin: 0;
     font-size: 20px;
+    color: white;
+    padding: 0 40px;
 }
 
-.participants-list {
+.payment-participants-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    margin: 0;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-bottom: 20px;
 }
 
-.participant-item {
+.payment-participant-item {
     display: flex;
     align-items: center;
     padding: 15px;
@@ -61,23 +70,23 @@
     cursor: pointer;
 }
 
-.participant-item.selected {
+.payment-participant-item.payment-selected {
     background-color: #f0f0f0;
     border: 1px solid #ea5558;
 }
 
-.radio-button {
+.payment-radio-button {
     margin-right: 15px;
     accent-color: #ea5558;
 }
 
-.participant-id {
+.payment-participant-id {
     font-weight: bold;
     margin-right: 15px;
     min-width: 30px;
 }
 
-.participant-name {
+.payment-participant-name {
     flex-grow: 1;
     text-align: left;
 }
@@ -86,15 +95,17 @@
     background-color: #ea5558;
     color: white;
     border: none;
-    padding: 15px;
-    border-radius: 8px;
+    height: 40px;
+    border-radius: 20px;
     font-size: 16px;
     cursor: pointer;
-    width: 100%;
-    margin-top: 20px;
+    margin: 0 auto 5%;
+    width: 90%;
+    position: sticky;
 }
 
-.payment-button.disabled {
+.payment-button.payment-disabled {
     background-color: #cccccc;
+    color: #342e2e;
     cursor: not-allowed;
 }

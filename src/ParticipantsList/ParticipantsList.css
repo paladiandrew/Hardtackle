@@ -2,41 +2,46 @@
 .participants-container {
     font-family: Arial, sans-serif;
     max-width: 100%;
+    height: 100vh;
     margin: 0 auto;
-    padding: 20px;
+    background-image: url('./images/bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     position: relative;
 }
 
 .participants-header {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    padding: 30px;
     position: relative;
 }
-
-.back-button {
+.participants-back-button {
     background-color: #ea5558;
     border: none;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     padding: 0;
-    margin-right: 10px;
+    position: absolute;
+    left: 15px;
+    z-index: 1;
 }
 
-.back-icon {
-    width: 20px;
-    height: 20px;
+.participants-back-icon {
+    width: 16px;
+    height: 16px;
 }
 
 .participants-title {
-    flex-grow: 1;
+    margin: 0 auto;
+    color: #e8f5e9;
     text-align: center;
-    margin: 0;
     font-size: 20px;
 }
 
