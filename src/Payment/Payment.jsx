@@ -1,13 +1,11 @@
 // src/Payment/Payment.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import backImage from "./images/back.png";
 import "./Payment.css";
 
 export default function Payment() {
-    const { state } = useLocation();
-    const queryParams = new URLSearchParams(window.location.search);
-    const tgId = state?.tgId || queryParams.get('tgId');
+    const { tgId } = useParams();
     const [participants, setParticipants] = useState([]);
     const [selectedParticipant, setSelectedParticipant] = useState(null);
     const navigate = useNavigate();
@@ -27,7 +25,7 @@ export default function Payment() {
     }, []);
 
     const handleBack = () => {
-        navigate("/main");
+        navigate(`/main/${tgId}`);
     };
 
     const handleParticipantSelect = (id) => {

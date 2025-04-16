@@ -1,35 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "./MiniAppMain.css";
 
 export default function MiniAppMain() {
-    const [tgId, setTgId] = useState(null);
+    const { tgId } = useParams();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        // Парсим параметры URL
-        const queryParams = new URLSearchParams(window.location.search);
-        const urlTgId = queryParams.get('tgId');
-        
-        if (urlTgId) {
-            console.log("tgId из URL:", urlTgId);
-            setTgId(urlTgId);
-            localStorage.setItem("tgUser", urlTgId);
-            return;
-        }
-    
-        // Если нет в URL, пробуем Telegram WebApp (на всякий случай)
-        if (window.Telegram?.WebApp) {
-            const tg = window.Telegram.WebApp;
-            const user = tg.initDataUnsafe?.user;
-            if (user?.id) {
-                setTgId(user.id);
-            }
-        }
-    }, []);
-
     const navigateWithState = (path) => {
-        navigate(path, { state: { tgId } });
+        navigate(`${path}/${tgId}`);
     };
 
     return (

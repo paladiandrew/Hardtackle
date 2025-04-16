@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import backImage from "./images/back.png";
 import "./ParticipantsList.css";
 
@@ -9,9 +9,7 @@ export default function ParticipantsList() {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [selectedParticipant, setSelectedParticipant] = useState(null);
     const navigate = useNavigate();
-    const { state } = useLocation();
-    const queryParams = new URLSearchParams(window.location.search);
-    const tgId = state?.tgId || queryParams.get('tgId');
+    const { tgId } = useParams();
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -34,7 +32,7 @@ export default function ParticipantsList() {
     }, []);
 
     const handleBack = () => {
-        navigate("/main");
+        navigate(`/main/${tgId}`);
     };
 
     const handlePaymentClick = (participant) => {

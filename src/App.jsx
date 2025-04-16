@@ -15,13 +15,13 @@ export default function App() {
         <Router>
             <Routes>
                 <Route path="/" element={<MainScreen />} />
-                <Route path="/main" element={<MiniAppMain />} />
-                <Route path="/registration" element={<Registration />} />
-                <Route path="/participants" element={<ParticipantsList />} />
+                <Route path="/main/:tgId" element={<MiniAppMain />} />
+                <Route path="/registration/:tgId" element={<Registration />} />
+                <Route path="/participants/:tgId" element={<ParticipantsList />} />
                 <Route path="/past-results" element={<PastResults />} />
                 <Route path="/tournament/:code" element={<Tournament />} />
                 <Route path="/statistics/:code" element={<Statistics />} />
-                <Route path="/payment" element={<Payment />} />
+                <Route path="/payment/:tgId" element={<Payment />} />
             </Routes>
         </Router>
     );
