@@ -6,27 +6,13 @@ import './Registration.css';
 export default function Registration() {
     const [name, setName] = useState("");
     const [showConfirmation, setShowConfirmation] = useState(false);
-    const [tgId, setTgId] = useState(null);
     const { state } = useLocation();
-    const tgid = state?.tgId;
+    const tgId = state?.tgId;
     const navigate = useNavigate();
-    console.log(tgId);
+
     const handleBack = () => {
         navigate(-1); // Возврат на предыдущую страницу
     };
-
-    useEffect(() => {
-        if (window.Telegram?.WebApp) {
-            const tg = window.Telegram.WebApp;
-            tg.expand();
-            
-            const user = tg.initDataUnsafe?.user;
-            if (user?.id) {
-                setTgId(user.id);
-                localStorage.setItem("tgUser", JSON.stringify(user));
-            }
-        }
-    }, []);
 
     const handleRegister = async () => {
         if (!name.trim()) return;

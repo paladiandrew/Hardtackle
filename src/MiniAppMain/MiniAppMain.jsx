@@ -9,7 +9,11 @@ export default function MiniAppMain() {
     useEffect(() => {
         if (window.Telegram?.WebApp) {
             const tg = window.Telegram.WebApp;
-            tg.expand();
+            const startParam = tg.startParam; // Берём ID из параметра ссылки
+            if (startParam) {
+                setTgId(startParam);
+                return;
+            }
             
             const user = tg.initDataUnsafe?.user;
             if (user?.id) {
