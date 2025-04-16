@@ -47,7 +47,7 @@ export default function ParticipantsList() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ tgId: window.Telegram.WebApp.initDataUnsafe.user.id })
+                body: JSON.stringify({ tgId })
             });
             setShowConfirmation(false);
         } catch (error) {
@@ -86,11 +86,11 @@ export default function ParticipantsList() {
                         key={participant.id} 
                         className={`participant-item ${participant.isPaid ? "paid" : "unpaid"}`}
                     >
-                        <span className="participant-id">{participant.id + 1}</span>
+                        <span className="participant-id">{participant.id }</span>
                         <span className="participant-name">{participant.fullName}</span>
-                        {isRegistrationOpen && !participant.isPaid && participant.id < 52 && (
+                        {isRegistrationOpen && !participant.isPaid && (
                             <button 
-                                className="payment-button"
+                                className="confirmation-payment-button"
                                 onClick={() => handlePaymentClick(participant)}
                             >
                                 Ю
