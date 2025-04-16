@@ -9,7 +9,7 @@ export default function Registration() {
     const { state } = useLocation();
     const tgId = state?.tgId;
     const navigate = useNavigate();
-
+    console.log(tgId);
     const handleBack = () => {
         navigate(-1); // Возврат на предыдущую страницу
     };
