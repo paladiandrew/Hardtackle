@@ -7,18 +7,23 @@ export default function MiniAppMain() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        // Парсим параметры URL
+        const queryParams = new URLSearchParams(window.location.search);
+        const urlTgId = queryParams.get('tgId');
+        
+        if (urlTgId) {
+            console.log("tgId из URL:", urlTgId);
+            setTgId(urlTgId);
+            localStorage.setItem("tgUser", urlTgId);
+            return;
+        }
+    
+        // Если нет в URL, пробуем Telegram WebApp (на всякий случай)
         if (window.Telegram?.WebApp) {
             const tg = window.Telegram.WebApp;
-            const startParam = tg.startParam; // Берём ID из параметра ссылки
-            if (startParam) {
-                setTgId(startParam);
-                return;
-            }
-            
             const user = tg.initDataUnsafe?.user;
             if (user?.id) {
                 setTgId(user.id);
-                localStorage.setItem("tgUser", JSON.stringify(user));
             }
         }
     }, []);

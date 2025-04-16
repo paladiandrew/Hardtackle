@@ -6,13 +6,11 @@ import "./Payment.css";
 
 export default function Payment() {
     const { state } = useLocation();
-    const tgId = state?.tgId;
+    const queryParams = new URLSearchParams(window.location.search);
+    const tgId = state?.tgId || queryParams.get('tgId');
     const [participants, setParticipants] = useState([]);
     const [selectedParticipant, setSelectedParticipant] = useState(null);
     const navigate = useNavigate();
-    // В начале компонента
-
-    
 
     useEffect(() => {
         const fetchParticipants = async () => {

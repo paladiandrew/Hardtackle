@@ -7,7 +7,8 @@ export default function Registration() {
     const [name, setName] = useState("");
     const [showConfirmation, setShowConfirmation] = useState(false);
     const { state } = useLocation();
-    const tgId = state?.tgId;
+    const queryParams = new URLSearchParams(window.location.search);
+    const tgId = state?.tgId || queryParams.get('tgId');
     const navigate = useNavigate();
 
     const handleBack = () => {

@@ -4,14 +4,14 @@ import backImage from "./images/back.png";
 import "./ParticipantsList.css";
 
 export default function ParticipantsList() {
-    const { state } = useLocation();
-    const tgId = state?.tgId;
     const [participants, setParticipants] = useState([]);
     const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [selectedParticipant, setSelectedParticipant] = useState(null);
     const navigate = useNavigate();
-
+    const { state } = useLocation();
+    const queryParams = new URLSearchParams(window.location.search);
+    const tgId = state?.tgId || queryParams.get('tgId');
     useEffect(() => {
         const fetchData = async () => {
             try {
