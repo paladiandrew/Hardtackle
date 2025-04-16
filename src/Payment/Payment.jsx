@@ -1,19 +1,23 @@
 // src/Payment/Payment.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import backImage from "./images/back.png";
 import "./Payment.css";
 
 export default function Payment() {
+    const { state } = useLocation();
+    const tgId = state?.tgId;
     const [participants, setParticipants] = useState([]);
     const [selectedParticipant, setSelectedParticipant] = useState(null);
     const navigate = useNavigate();
+    // В начале компонента
+
+    
 
     useEffect(() => {
         const fetchParticipants = async () => {
             try {
-                const tgId = window.Telegram.WebApp.initDataUnsafe.user.id;
-                const response = await fetch(`/api/participants?tgId=${tgId}`);
+                const response = await fetch(`https://htcupbackend.ru/api/participants?tgId=${tgId}`);
                 const data = await response.json();
                 setParticipants(data);
             } catch (error) {
@@ -44,7 +48,7 @@ export default function Payment() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    tgId: window.Telegram.WebApp.initDataUnsafe.user.id,
+                    tgId: tgId,
                     transactionId: "generated_transaction_id" // Заменить на реальный ID транзакции
                 })
             });

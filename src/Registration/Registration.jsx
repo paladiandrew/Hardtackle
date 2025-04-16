@@ -1,42 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation  } from "react-router-dom";
 import backImage from "./images/back.png";
 import './Registration.css';
 
 export default function Registration() {
     const [name, setName] = useState("");
     const [showConfirmation, setShowConfirmation] = useState(false);
-    const [tgId, setTgId] = useState(null);
+    const { state } = useLocation();
+    const tgId = state?.tgId;
     const navigate = useNavigate();
 
-    useEffect(() => {
-        // Проверяем, находимся ли мы в Telegram WebApp
-        if (window.Telegram?.WebApp) {
-            const tg = window.Telegram.WebApp;
-            tg.expand(); // Раскрываем приложение на весь экран
-            
-            // Получаем данные пользователя, если они есть
-            const user = tg.initDataUnsafe?.user;
-            if (user) {
-                setTgId(user.id);
-            } else {
-                console.warn("User data not available in Telegram WebApp");
-                // Можно предложить альтернативный способ входа
-            }
-        } else {
-            console.log("Running in browser, not in Telegram");
-            // Здесь можно реализовать логику для браузера
-            // Например, запросить ввод ID вручную или использовать тестовый режим
-            // setTgId("browser_test_id");
-        }
-    }, []);
+    const handleBack = () => {
+        navigate(-1); // Возврат на предыдущую страницу
+    };
 
     const handleRegister = async () => {
         if (!name.trim()) return;
         
         try {
-            const registrationDate = new Date().toISOString();
-            const response = await fetch('/api/register', {
+            const response = await fetch('https://htcupbackend.ru/api/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -44,20 +26,18 @@ export default function Registration() {
                 body: JSON.stringify({ 
                     tgId,
                     fullName: name,
-                    registrationDate 
+                    registrationDate: new Date().toISOString()
                 }),
             });
 
-            const result = await response.json();
             if (response.ok) {
                 navigate("/main", { state: { registrationSuccess: true } });
-            } else {
-                console.error(result.message);
             }
         } catch (error) {
             console.error('Ошибка регистрации:', error);
         }
     };
+
 
     return (
         <div className="registration">
@@ -86,12 +66,12 @@ export default function Registration() {
                 </div>
             )}
             
-            <h2 className="registration-header">
-                <Link to="/main" >
-                    <img src={backImage} alt="Назад" className="vectorImage"/>
-                </Link>
-                Регистрация
-            </h2>
+            <div className="registration-header">
+                <button className="registration-back" onClick={handleBack} >
+                    <img src={backImage} alt="Назад" className="registration-image"/>
+                </button>
+                <h2 className="registration-title">Регистрация</h2>
+            </div>
             
                 <input 
                     type="text" 

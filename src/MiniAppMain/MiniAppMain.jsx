@@ -1,28 +1,50 @@
-// src/MiniAppMain.jsx
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./MiniAppMain.css";
 
 export default function MiniAppMain() {
+    const [tgId, setTgId] = useState(null);
+    const navigate = useNavigate();
+
     useEffect(() => {
-        if (window.Telegram && window.Telegram.WebApp) {
-            localStorage.setItem("tgUser", JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user));
+        if (window.Telegram?.WebApp) {
+            const tg = window.Telegram.WebApp;
+            tg.expand();
+            
+            const user = tg.initDataUnsafe?.user;
+            if (user?.id) {
+                setTgId(user.id);
+                localStorage.setItem("tgUser", JSON.stringify(user));
+            }
         }
     }, []);
+
+    const navigateWithState = (path) => {
+        navigate(path, { state: { tgId } });
+    };
 
     return (
         <div className="miniapp-container">
             <h1 className="tournament-title">Hardtackle Trout Cup</h1>
             <div className="buttons-container">
-                <Link to="/registration" className="miniapp-button">
+                <button 
+                    className="miniapp-button" 
+                    onClick={() => navigateWithState("/registration")}
+                >
                     Регистрация
-                </Link>
-                <Link to="/participants" className="miniapp-button">
+                </button>
+                <button 
+                    className="miniapp-button" 
+                    onClick={() => navigateWithState("/participants")}
+                >
                     Список участников
-                </Link>
-                <Link to="/payment" className="miniapp-button">
+                </button>
+                <button 
+                    className="miniapp-button" 
+                    onClick={() => navigateWithState("/payment")}
+                >
                     Оплата
-                </Link>
+                </button>
             </div>
         </div>
     );

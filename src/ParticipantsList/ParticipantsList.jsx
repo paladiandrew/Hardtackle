@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import backImage from "./images/back.png";
 import "./ParticipantsList.css";
 
 export default function ParticipantsList() {
+    const { state } = useLocation();
+    const tgId = state?.tgId;
     const [participants, setParticipants] = useState([]);
     const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
@@ -14,8 +16,8 @@ export default function ParticipantsList() {
         const fetchData = async () => {
             try {
                 const [participantsRes, tournamentRes] = await Promise.all([
-                    fetch("/api/participants"),
-                    fetch("/api/tournaments/current")
+                    fetch("https://htcupbackend.ru/api/participants"),
+                    fetch("https://htcupbackend.ru/api/tournaments/current")
                 ]);
                 
                 const participantsData = await participantsRes.json();
@@ -42,7 +44,7 @@ export default function ParticipantsList() {
 
     const confirmPayment = async () => {
         try {
-            await fetch(`/api/participants/${selectedParticipant.id}/mark-for-payment`, {
+            await fetch(`https://htcupbackend.ru/api/participants/${selectedParticipant.id}/mark-for-payment`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
