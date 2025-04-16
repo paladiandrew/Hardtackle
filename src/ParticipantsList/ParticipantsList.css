@@ -62,11 +62,11 @@
 }
 
 .participant-item.paid {
-    background-color: #e8f5e9;
+    background-color: #16c725;
 }
 
 .participant-item.unpaid {
-    background-color: white;
+    background-color: #e8f5e9;
 }
 
 .participant-id {

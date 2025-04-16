@@ -1,104 +1,82 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
-import backImage from "./images/back.png";
+import { useParams, useNavigate } from "react-router-dom";
 import "./ParticipantsList.css";
 
 export default function ParticipantsList() {
-    const [participants, setParticipants] = useState([]);
-    const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
-    const [showConfirmation, setShowConfirmation] = useState(false);
-    const [selectedParticipant, setSelectedParticipant] = useState(null);
-    const navigate = useNavigate();
     const { tgId } = useParams();
+    const [participants, setParticipants] = useState([]);
+    const [selectedParticipants, setSelectedParticipants] = useState([]);
+    const navigate = useNavigate();
+
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchParticipants = async () => {
             try {
-                const [participantsRes, tournamentRes] = await Promise.all([
-                    fetch("https://htcupbackend.ru/api/participants"),
-                    fetch("https://htcupbackend.ru/api/tournaments/current")
-                ]);
-                
-                const participantsData = await participantsRes.json();
-                const tournamentData = await tournamentRes.json();
-                
-                setParticipants(participantsData);
-                setIsRegistrationOpen(tournamentData.isRegistrationOpen);
+                const response = await fetch(`https://htcupbackend.ru/api/participants`);
+                const data = await response.json();
+                setParticipants(data);
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Error fetching participants:", error);
             }
         };
         
-        fetchData();
-    }, []);
+        fetchParticipants();
+    }, [tgId]);
 
-    const handleBack = () => {
-        navigate(`/main/${tgId}`);
+    const handleSelectParticipant = (id) => {
+        setSelectedParticipants(prev => 
+            prev.includes(id) 
+                ? prev.filter(item => item !== id) 
+                : [...prev, id]
+        );
     };
 
-    const handlePaymentClick = (participant) => {
-        setSelectedParticipant(participant);
-        setShowConfirmation(true);
-    };
-
-    const confirmPayment = async () => {
+    const handleConfirmPayment = async () => {
         try {
-            await fetch(`https://htcupbackend.ru/api/participants/${selectedParticipant.id}/mark-for-payment`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ tgId })
-            });
-            setShowConfirmation(false);
+            await Promise.all(
+                selectedParticipants.map(id => 
+                    fetch(`https://htcupbackend.ru/api/participantsList/mark-for-payment/${id}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ tgId })
+                    })
+                )
+            );
+            
+            navigate(`/payment/${tgId}`);
         } catch (error) {
-            console.error("Error marking for payment:", error);
+            console.error("Error marking participants:", error);
         }
     };
 
     return (
-        <div className="participants-container">
-            {showConfirmation && (
-                <div className="confirmation-overlay">
-                    <div className="confirmation-modal">
-                        <p>Вы хотите оплатить данного участника?</p>
-                        <div className="confirmation-buttons">
-                            <button className="cancel-button" onClick={() => setShowConfirmation(false)}>
-                                Отмена
-                            </button>
-                            <button className="confirm-button" onClick={confirmPayment}>
-                                Да
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+        <div className="participants-list-container">
+            <h2>Выберите участников для оплаты</h2>
             
-            <div className="participants-header">
-                <button className="participants-back-button" onClick={handleBack}>
-                    <img src={backImage} alt="Back" className="participants-back-icon" />
-                </button>
-                <h2 className="participants-title">Список участников</h2>
-            </div>
-            
-            <div className="participants-list">
-                {participants.map((participant) => (
+            <div className="participants-grid">
+                {participants.map(participant => (
                     <div 
-                        key={participant.id} 
-                        className={`participant-item ${participant.isPaid ? "paid" : "unpaid"}`}
+                        key={participant.id}
+                        className={`participant-card ${selectedParticipants.includes(participant.id) ? "selected" : ""}`}
+                        onClick={() => handleSelectParticipant(participant.id)}
                     >
-                        <span className="participant-id">{participant.id }</span>
-                        <span className="participant-name">{participant.fullName}</span>
-                        {isRegistrationOpen && !participant.isPaid && (
-                            <button 
-                                className="confirmation-payment-button"
-                                onClick={() => handlePaymentClick(participant)}
-                            >
-                                Ю
-                            </button>
-                        )}
+                        <input
+                            type="checkbox"
+                            checked={selectedParticipants.includes(participant.id)}
+                            onChange={() => handleSelectParticipant(participant.id)}
+                        />
+                        <span>{participant.fullName}</span>
                     </div>
                 ))}
             </div>
+            
+            <button 
+                onClick={handleConfirmPayment}
+                disabled={selectedParticipants.length === 0}
+            >
+                Подтвердить выбор ({selectedParticipants.length})
+            </button>
         </div>
     );
 }

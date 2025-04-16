@@ -1,4 +1,3 @@
-// src/Payment/Payment.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import backImage from "./images/back.png";
@@ -13,7 +12,7 @@ export default function Payment() {
     useEffect(() => {
         const fetchParticipants = async () => {
             try {
-                const response = await fetch(`https://htcupbackend.ru/api/participants?tgId=${tgId}`);
+                const response = await fetch(`https://htcupbackend.ru/api/payment/participants?tgId=${tgId}`);
                 const data = await response.json();
                 setParticipants(data);
             } catch (error) {
@@ -22,7 +21,7 @@ export default function Payment() {
         };
         
         fetchParticipants();
-    }, []);
+    }, [tgId]);
 
     const handleBack = () => {
         navigate(`/main/${tgId}`);
@@ -38,7 +37,7 @@ export default function Payment() {
         try {
             // Здесь должна быть реализация оплаты через ЮKassa
             // После успешной оплаты:
-            const response = await fetch(`/api/participants/${selectedParticipant}/mark-as-paid`, {
+            const response = await fetch(`https://htcupbackend.ru/api/payment/confirm/${selectedParticipant}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
