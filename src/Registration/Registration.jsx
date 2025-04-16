@@ -30,7 +30,7 @@ export default function Registration() {
             });
 
             if (response.ok) {
-                navigate("/main", { state: { registrationSuccess: true } });
+                navigate(`/main/${tgId}`);
             }
         } catch (error) {
             console.error('Ошибка регистрации:', error);
