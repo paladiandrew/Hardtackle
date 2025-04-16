@@ -1,65 +1,97 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import backImage from "./images/back.png";
 import "./Payment.css";
 
 export default function Payment() {
     const { tgId } = useParams();
-    const [markedParticipants, setMarkedParticipants] = useState([]);
+    const [participants, setParticipants] = useState([]);
+    const [selectedParticipant, setSelectedParticipant] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchMarkedParticipants = async () => {
+        const fetchParticipants = async () => {
             try {
                 const response = await fetch(`https://htcupbackend.ru/api/payment/participants?tgId=${tgId}`);
                 const data = await response.json();
-                setMarkedParticipants(data);
+                setParticipants(data);
+                if (data.length > 0) {
+                    setSelectedParticipant(data[0].id); // Автовыбор первого участника
+                }
             } catch (error) {
-                console.error("Ошибка загрузки участников:", error);
+                console.error("Error fetching participants:", error);
             }
         };
-        fetchMarkedParticipants();
+        
+        fetchParticipants();
     }, [tgId]);
 
+    const handleBack = () => {
+        navigate(`/main/${tgId}`);
+    };
+
+    const handleParticipantSelect = (id) => {
+        setSelectedParticipant(id);
+    };
+
     const handlePayment = async () => {
+        if (!selectedParticipant) return;
+        
         try {
-            // Здесь должна быть интеграция с платежной системой
+            // Здесь должна быть реализация оплаты через ЮKassa
             // После успешной оплаты:
-            await fetch(`https://htcupbackend.ru/api/payment/confirm`, {
+            const response = await fetch(`https://htcupbackend.ru/api/payment/confirm`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ tgId })
+                body: JSON.stringify({
+                    tgId,
+                    participantId: selectedParticipant,
+                    transactionId: "generated_transaction_id" // Заменить на реальный ID транзакции
+                })
             });
             
-            navigate(`/main/${tgId}`);
+            if (response.ok) {
+                navigate(`/main/${tgId}`);
+            }
         } catch (error) {
-            console.error("Ошибка оплаты:", error);
+            console.error("Payment error:", error);
         }
     };
 
     return (
-        <div className="payment-page">
-            <h2>Оплата участия</h2>
+        <div className="payment-container">
+            <div className="payment-header">
+                <button className="payment-back-button" onClick={handleBack}>
+                    <img src={backImage} alt="Back" className="payment-back-icon" />
+                </button>
+                <h2 className="payment-title">Оплата участия</h2>
+            </div>
             
-            <div className="payment-summary">
-                <h3>Выбранные участники:</h3>
-                <ul>
-                    {markedParticipants.map(participant => (
-                        <li key={participant.id}>
-                            {participant.fullName} ({participant.code})
-                        </li>
-                    ))}
-                </ul>
-                
-                <div className="total-amount">
-                    Итого к оплате: {markedParticipants.length * 1000} ₽
-                </div>
+            <div className="payment-participants-list">
+                {participants.map((participant) => (
+                    <div 
+                        key={participant.id} 
+                        className={`payment-participant-item ${selectedParticipant === participant.id ? "payment-selected" : ""}`}
+                        onClick={() => handleParticipantSelect(participant.id)}
+                    >
+                        <input
+                            type="radio"
+                            checked={selectedParticipant === participant.id}
+                            onChange={() => handleParticipantSelect(participant.id)}
+                            className="payment-radio-button"
+                        />
+                        <span className="payment-participant-id">{participant.id}</span>
+                        <span className="payment-participant-name">{participant.fullName}</span>
+                    </div>
+                ))}
             </div>
             
             <button 
-                className="pay-button"
+                className={`payment-button ${!selectedParticipant ? "payment-disabled" : ""}`}
                 onClick={handlePayment}
+                disabled={!selectedParticipant}
             >
                 Оплатить
             </button>
