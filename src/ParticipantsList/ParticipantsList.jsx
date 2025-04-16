@@ -5,77 +5,81 @@ import "./ParticipantsList.css";
 export default function ParticipantsList() {
     const { tgId } = useParams();
     const [participants, setParticipants] = useState([]);
-    const [selectedParticipants, setSelectedParticipants] = useState([]);
+    const [selectedIds, setSelectedIds] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchParticipants = async () => {
+        const fetchUnpaidParticipants = async () => {
             try {
-                const response = await fetch(`https://htcupbackend.ru/api/participants`);
+                const response = await fetch(`https://htcupbackend.ru/api/participants/unpaid`);
                 const data = await response.json();
                 setParticipants(data);
             } catch (error) {
-                console.error("Error fetching participants:", error);
+                console.error("Ошибка загрузки участников:", error);
             }
         };
-        
-        fetchParticipants();
+        fetchUnpaidParticipants();
     }, [tgId]);
 
-    const handleSelectParticipant = (id) => {
-        setSelectedParticipants(prev => 
+    const toggleParticipant = (id) => {
+        setSelectedIds(prev => 
             prev.includes(id) 
                 ? prev.filter(item => item !== id) 
                 : [...prev, id]
         );
     };
 
-    const handleConfirmPayment = async () => {
+    const proceedToPayment = async () => {
         try {
-            await Promise.all(
-                selectedParticipants.map(id => 
-                    fetch(`https://htcupbackend.ru/api/participantsList/mark-for-payment/${id}`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ tgId })
-                    })
-                )
-            );
+            // Отправляем выбранных участников на сервер
+            await fetch(`https://htcupbackend.ru/api/participants/mark-for-payment`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    tgId,
+                    participantIds: selectedIds
+                })
+            });
             
+            // Переходим на страницу оплаты
             navigate(`/payment/${tgId}`);
         } catch (error) {
-            console.error("Error marking participants:", error);
+            console.error("Ошибка при отметке участников:", error);
         }
     };
 
     return (
-        <div className="participants-list-container">
+        <div className="participants-list">
             <h2>Выберите участников для оплаты</h2>
             
-            <div className="participants-grid">
+            <div className="participants-container">
                 {participants.map(participant => (
                     <div 
                         key={participant.id}
-                        className={`participant-card ${selectedParticipants.includes(participant.id) ? "selected" : ""}`}
-                        onClick={() => handleSelectParticipant(participant.id)}
+                        className={`participant-card ${selectedIds.includes(participant.id) ? "selected" : ""}`}
+                        onClick={() => toggleParticipant(participant.id)}
                     >
                         <input
                             type="checkbox"
-                            checked={selectedParticipants.includes(participant.id)}
-                            onChange={() => handleSelectParticipant(participant.id)}
+                            checked={selectedIds.includes(participant.id)}
+                            onChange={() => toggleParticipant(participant.id)}
                         />
-                        <span>{participant.fullName}</span>
+                        <div className="participant-info">
+                            <span className="participant-name">{participant.fullName}</span>
+                            <span className="participant-code">{participant.code}</span>
+                        </div>
                     </div>
                 ))}
             </div>
             
             <button 
-                onClick={handleConfirmPayment}
-                disabled={selectedParticipants.length === 0}
+                className="proceed-button"
+                onClick={proceedToPayment}
+                disabled={selectedIds.length === 0}
             >
-                Подтвердить выбор ({selectedParticipants.length})
+                Перейти к оплате ({selectedIds.length})
             </button>
         </div>
     );
