@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import backImage from "./images/back.png";
+import { v4 as uuidv4 } from 'uuid';
 import "./Payment.css";
 
 export default function Payment() {
@@ -38,27 +39,102 @@ export default function Payment() {
         if (!selectedParticipant) return;
         
         try {
-            // Здесь должна быть реализация оплаты через ЮKassa
-            // После успешной оплаты:
-            const response = await fetch(`https://htcupbackend.ru/api/payment/confirm`, {
-                method: "POST",
+            // 1. Получаем текущий турнир для определения цены
+            const tournamentRes = await fetch('https://htcupbackend.ru/api/tournaments/current');
+            const tournament = await tournamentRes.json();
+            
+            if (!tournament || !tournament.tournamentPrice) {
+                throw new Error('Не удалось получить стоимость турнира');
+            }
+    
+            // 2. Создаем платеж в ЮKassa (тестовый режим)
+            const paymentResponse = await fetch('https://api.yookassa.ru/v3/payments', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
+                    'Authorization': `Basic ${btoa('412158:live_KwWVtffxj-Ww7JIh70zoMQmtmNpZlVT4HwTwqIktluM')}`, // Тестовый ключ
+                    'Idempotence-Key': uuidv4() // Уникальный ключ идемпотентности
                 },
                 body: JSON.stringify({
-                    tgId,
-                    participantId: selectedParticipant,
-                    transactionId: "generated_transaction_id" // Заменить на реальный ID транзакции
+                    amount: {
+                        value: tournament.tournamentPrice.toFixed(2),
+                        currency: 'RUB'
+                    },
+                    payment_method_data: {
+                        type: 'bank_card'
+                    },
+                    confirmation: {
+                        type: 'redirect',
+                        return_url: window.location.href
+                    },
+                    capture: true,
+                    description: `Оплата участия в турнире (${selectedParticipant.fullName})`,
+                    metadata: {
+                        participantId: selectedParticipant.id,
+                        tgId: tgId,
+                        tournamentId: tournament.id
+                    }
                 })
             });
-            
-            if (response.ok) {
-                navigate(`/main/${tgId}`);
+    
+            const paymentData = await paymentResponse.json();
+    
+            if (paymentData.status === 'pending') {
+                // 3. Перенаправляем пользователя на страницу оплаты
+                window.location.href = paymentData.confirmation.confirmation_url;
+                
+                // 4. Сохраняем ID платежа для проверки статуса
+                localStorage.setItem('yookassa_payment_id', paymentData.id);
+            } else {
+                throw new Error('Не удалось инициировать платеж');
             }
+    
         } catch (error) {
-            console.error("Payment error:", error);
+            console.error("Ошибка оплаты:", error);
+            // Здесь можно добавить уведомление об ошибке
         }
     };
+    
+    // Проверка статуса оплаты при возврате
+    useEffect(() => {
+        const checkPayment = async () => {
+            const paymentId = localStorage.getItem('yookassa_payment_id');
+            if (paymentId) {
+                try {
+                    const statusRes = await fetch(`https://api.yookassa.ru/v3/payments/${paymentId}`, {
+                        headers: {
+                            'Authorization': `Basic ${btoa('412158:live_KwWVtffxj-Ww7JIh70zoMQmtmNpZlVT4HwTwqIktluM')}`
+                        }
+                    });
+                    const payment = await statusRes.json();
+                    
+                    if (payment.status === 'succeeded') {
+                        // Подтверждаем оплату на нашем сервере
+                        const confirmRes = await fetch('https://htcupbackend.ru/api/payment/confirm', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                tgId: tgId,
+                                participantId: selectedParticipant.id,
+                                paymentData: payment // Отправляем все данные платежа
+                            })
+                        });
+                        
+                        if (confirmRes.ok) {
+                            localStorage.removeItem('yookassa_payment_id');
+                            navigate(`/main/${tgId}`);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Ошибка проверки платежа:', error);
+                }
+            }
+        };
+        
+        checkPayment();
+    }, [navigate, tgId, selectedParticipant]);
 
     return (
         <div className="payment-container">
