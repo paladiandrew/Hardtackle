@@ -36,14 +36,14 @@ export default function Payment() {
     };
 
     const handlePayment = async () => {
-        if (!selectedParticipantId) return;
+        if (!selectedParticipant) return;
         
         try {
           const response = await fetch('https://htcupbackend.ru/api/payment/create', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              participantId: selectedParticipantId,
+              participantId: selectedParticipant,
               tgId: tgId,
               returnUrl: `https://htcup.ru/main/${tgId}`
             })
