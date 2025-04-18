@@ -48,7 +48,7 @@ export default function Payment() {
                 body: JSON.stringify({
                     participantId: selectedParticipant.id,
                     tgId: tgId,
-                    returnUrl: window.location.href
+                    returnUrl: `https://htcup.ru/main/${tgId}`
                 })
             });
     
