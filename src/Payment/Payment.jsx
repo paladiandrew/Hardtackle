@@ -36,33 +36,32 @@ export default function Payment() {
     };
 
     const handlePayment = async () => {
-        if (!selectedParticipant) return;
+        if (!selectedParticipantId) return;
         
         try {
-            // Отправляем запрос на ваш сервер для создания платежа
-            const paymentResponse = await fetch('https://htcupbackend.ru/api/payment/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    participantId: selectedParticipant.id,
-                    tgId: tgId,
-                    returnUrl: `https://htcup.ru/main/${tgId}`
-                })
-            });
-    
-            const paymentData = await paymentResponse.json();
-            
-            if (paymentData.status === 'pending') {
-                window.location.href = paymentData.confirmation_url;
-                localStorage.setItem('yookassa_payment_id', paymentData.id);
-            }
+          const response = await fetch('https://htcupbackend.ru/api/payment/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              participantId: selectedParticipantId,
+              tgId: tgId,
+              returnUrl: `https://htcup.ru/main/${tgId}`
+            })
+          });
+      
+          const paymentData = await response.json();
+          console.log("Received payment data:", paymentData); // Логируем ответ
+      
+          if (paymentData.confirmation?.confirmation_url) {
+            console.log("Redirecting to:", paymentData.confirmation.confirmation_url);
+            window.location.href = paymentData.confirmation.confirmation_url; // Редирект
+          } else {
+            console.error("No confirmation URL found");
+          }
         } catch (error) {
-            console.error("Ошибка оплаты:", error);
-            // Обработка ошибки
+          console.error("Payment error:", error);
         }
-    };
+      };
     
     // Проверка статуса оплаты при возврате
     useEffect(() => {
