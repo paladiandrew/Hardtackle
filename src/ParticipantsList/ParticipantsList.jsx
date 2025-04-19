@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import backImage from "./images/back.png";
+import ErrorModal from '../components/ErrorModal';
 import "./ParticipantsList.css";
 
 export default function ParticipantsList() {
+    const [error, setError] = useState(null);
     const [participants, setParticipants] = useState([]);
+    const [markedParticipants, setMarkedParticipants] = useState([]);
     const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [selectedParticipant, setSelectedParticipant] = useState(null);
@@ -14,23 +17,26 @@ export default function ParticipantsList() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [participantsRes, tournamentRes] = await Promise.all([
+                const [participantsRes, tournamentRes, markedRes] = await Promise.all([
                     fetch("https://htcupbackend.ru/api/participants/list"),
-                    fetch("https://htcupbackend.ru/api/tournaments/current")
+                    fetch("https://htcupbackend.ru/api/tournaments/current"),
+                    fetch(`https://htcupbackend.ru/api/payment/participants?tgId=${tgId}`)
                 ]);
                 
                 const participantsData = await participantsRes.json();
                 const tournamentData = await tournamentRes.json();
+                const markedData = await markedRes.json();
                 
                 setParticipants(participantsData);
                 setIsRegistrationOpen(tournamentData.isRegistrationOpen);
+                setMarkedParticipants(markedData.map(user => user.id));
             } catch (error) {
-                console.error("Error fetching data:", error);
+                setError(error.message || "Ошибка загрузки данных");
             }
         };
         
         fetchData();
-    }, []);
+    }, [tgId]);
 
     const handleBack = () => {
         navigate(`/main/${tgId}`);
@@ -56,12 +62,13 @@ export default function ParticipantsList() {
             setShowConfirmation(false);
             navigate(`/payment/${tgId}`);
         } catch (error) {
-            console.error("Error marking for payment:", error);
+            setError(error.message || "Ошибка загрузки данных");
         }
     };
 
     return (
         <div className="participants-container">
+            {error && <ErrorModal message={error} />}
             {showConfirmation && (
                 <div className="confirmation-overlay">
                     <div className="confirmation-modal">
@@ -93,7 +100,7 @@ export default function ParticipantsList() {
                     >
                         <span className="participant-id">{participant.id}</span>
                         <span className="participant-name">{participant.fullName}</span>
-                        {isRegistrationOpen && !participant.isPaid && (
+                        {isRegistrationOpen && !participant.isPaid && !markedParticipants.includes(participant.id) && (
                             <button 
                                 className="confirmation-payment-button"
                                 onClick={() => handlePaymentClick(participant)}

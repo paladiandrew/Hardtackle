@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import ErrorModal from '../components/ErrorModal';
 import backImage from "./images/back.png";
 import './Registration.css';
 
 export default function Registration() {
+    const [error, setError] = useState(null);
     const [name, setName] = useState("");
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [showLimitModal, setShowLimitModal] = useState(false);
     const { tgId } = useParams();
     const navigate = useNavigate();
 
@@ -29,30 +32,52 @@ export default function Registration() {
                 }),
             });
 
+            if (response.status === 400) {
+                const data = await response.json();
+                if (data.message === "Максимум 2 регистрации на пользователя") {
+                    setShowLimitModal(true);
+                    return;
+                }
+            }
+
             if (response.ok) {
                 navigate(`/main/${tgId}`);
             }
         } catch (error) {
-            console.error('Ошибка регистрации:', error);
+            setError(error.message || "Ошибка регистрации");
         }
     };
 
 
     return (
-        <div className="registration">
+        <div className="registration-page">
+            {error && <ErrorModal message={error} />}
+            {showLimitModal && (
+                <div className="registration-page-limit-overlay">
+                    <div className="registration-page-limit-modal">
+                        <p>Вы достигли максимального количества регистраций (2 на пользователя)</p>
+                        <button 
+                        className="registration-page-ok-button" 
+                        onClick={() => setShowLimitModal(false)}
+                        >
+                            OK
+                        </button>
+                    </div>
+                </div>
+            )}
             {showConfirmation && (
-                <div className="confirmation-overlay">
-                    <div className="confirmation-modal">
+                <div className="registration-page-confirmation-overlay">
+                    <div className="registration-page-confirmation-modal">
                         <p>Вы точно хотите зарегистрировать участника?</p>
-                        <div className="confirmation-buttons">
+                        <div className="registration-page-confirmation-buttons">
                             <button 
-                                className="cancel-button" 
+                                className="registration-page-cancel-button" 
                                 onClick={() => setShowConfirmation(false)}
                             >
                                 Отмена
                             </button>
                             <button 
-                                className="confirm-button" 
+                                className="registration-page-confirm-button" 
                                 onClick={() => {
                                     setShowConfirmation(false);
                                     handleRegister();
@@ -65,27 +90,29 @@ export default function Registration() {
                 </div>
             )}
             
-            <div className="registration-header">
-                <button className="registration-back" onClick={handleBack} >
-                    <img src={backImage} alt="Назад" className="registration-image"/>
+            <div className="registration-page-header">
+                <button className="registration-page-back-button" onClick={handleBack}>
+                    <img src={backImage} alt="Назад" className="registration-page-back-icon"/>
                 </button>
-                <h2 className="registration-title">Регистрация</h2>
+                <h2 className="registration-page-title">Регистрация</h2>
             </div>
             
+            <div className="registration-page-content">
                 <input 
                     type="text" 
                     placeholder="Введите ФИО участника"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="registration-input"
+                    className="registration-page-input"
                 />
                 <button 
-                    className="registration-button" 
+                    className="registration-page-submit-button" 
                     onClick={() => setShowConfirmation(true)}
                     disabled={!name.trim()}
                 >
                     Зарегистрировать участника
                 </button>
+            </div>
         </div>
     );
 }

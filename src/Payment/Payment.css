@@ -1,7 +1,7 @@
-/* src/Payment/Payment.css */
-.payment-container {
+/* Основной контейнер */
+.payment-page {
     font-family: Arial, sans-serif;
-    max-width: 100%;
+    width: 100%;
     height: 100vh;
     margin: 0 auto;
     display: flex;
@@ -13,14 +13,19 @@
     position: relative;
 }
 
-.payment-header {
+/* Header */
+.payment-page-header {
     display: flex;
     align-items: center;
-    padding: 30px;
+    justify-content: center;
+    height: 60px;
+    background-color: #658199;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
+    width: 100%;
 }
 
-.payment-back-button {
+.payment-page-back-button {
     background-color: #ea5558;
     border: none;
     border-radius: 50%;
@@ -33,34 +38,39 @@
     padding: 0;
     position: absolute;
     left: 15px;
-    z-index: 1;
 }
 
-.payment-back-icon {
+.payment-page-back-icon {
     width: 16px;
     height: 16px;
 }
 
-.payment-title {
-    flex-grow: 1;
-    text-align: center;
+.payment-page-title {
     margin: 0;
+    color: #e8f5e9;
     font-size: 20px;
-    color: white;
-    padding: 0 40px;
+    line-height: 30px;
 }
 
-.payment-participants-list {
+/* Основное содержимое */
+.payment-page-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+}
+
+.payment-page-participants-list {
     flex: 1;
     overflow-y: auto;
-    padding: 15px;
-    margin: 0;
+    padding: 0 20px;
+    margin-bottom: 20px;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.payment-participant-item {
+.payment-page-participant-item {
     display: flex;
     align-items: center;
     padding: 15px;
@@ -70,42 +80,48 @@
     cursor: pointer;
 }
 
-.payment-participant-item.payment-selected {
+.payment-page-participant-item.payment-page-selected {
     background-color: #f0f0f0;
     border: 1px solid #ea5558;
 }
 
-.payment-radio-button {
+.payment-page-radio-button {
     margin-right: 15px;
     accent-color: #ea5558;
 }
 
-.payment-participant-id {
+.payment-page-participant-id {
     font-weight: bold;
     margin-right: 15px;
     min-width: 30px;
 }
 
-.payment-participant-name {
+.payment-page-participant-name {
     flex-grow: 1;
     text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.payment-button {
+.payment-page-button {
     background-color: #ea5558;
     color: white;
     border: none;
-    height: 40px;
-    border-radius: 20px;
+    height: 50px;
+    border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
-    margin: 0 auto 5%;
-    width: 90%;
-    position: sticky;
+    margin: 0 20px 20px;
+    transition: background-color 0.3s;
 }
 
-.payment-button.payment-disabled {
+.payment-page-button:hover {
+    background-color: #d04a4d;
+}
+
+.payment-page-button.payment-page-disabled {
     background-color: #cccccc;
-    color: #342e2e;
+    color: #666666;
     cursor: not-allowed;
 }

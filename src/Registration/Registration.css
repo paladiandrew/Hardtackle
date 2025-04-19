@@ -1,4 +1,5 @@
-.registration {
+/* Основной контейнер */
+.registration-page {
     font-family: Arial, sans-serif;
     width: 100%;
     height: 100vh;
@@ -11,21 +12,20 @@
     background-repeat: no-repeat;
     position: relative;
 }
-.registration-title {
-    margin: 0 auto;
-    color: #e8f5e9;
-    text-align: center;
-    font-size: 20px;
-}
 
-.registration-header {
+/* Header */
+.registration-page-header {
     display: flex;
     align-items: center;
-    padding: 30px;
+    justify-content: center;
+    height: 60px;
+    background-color: #658199;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
+    width: 100%;
 }
 
-.registration-back {
+.registration-page-back-button {
     background-color: #ea5558;
     border: none;
     border-radius: 50%;
@@ -38,39 +38,70 @@
     padding: 0;
     position: absolute;
     left: 15px;
-    z-index: 1;
 }
 
-.registration-image {
+.registration-page-back-icon {
     width: 16px;
     height: 16px;
 }
 
-.registration-input {
-    width: 80%;
-    margin: 0 auto;
-    margin-top: 60%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
+.registration-page-title {
+    margin: 0;
+    color: #e8f5e9;
+    font-size: 20px;
+    line-height: 30px;
 }
 
-.registration-button {
+/* Основное содержимое */
+.registration-page-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.registration-page-input {
+    width: 90%;
+    max-width: 400px;
+    padding: 15px;
+    margin-bottom: 30px;
+    border: 2px solid #658199;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.registration-page-input:focus {
+    border-color: #9c27b0;
+}
+
+.registration-page-submit-button {
     width: 80%;
-    padding: 12px;
-    margin: 0 auto;
-    margin-top: 20%;
+    max-width: 400px;
+    padding: 15px;
     background-color: #ea5558;
     color: white;
     border: none;
     border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-/* Стили для модального окна подтверждения остаются без изменений */
-.confirmation-overlay {
+.registration-page-submit-button:hover {
+    background-color: #d04a4d;
+}
+
+.registration-page-submit-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* Модальное окно подтверждения */
+.registration-page-confirmation-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -83,7 +114,7 @@
     z-index: 1000;
 }
 
-.confirmation-modal {
+.registration-page-confirmation-modal {
     background-color: #39485b;
     padding: 20px;
     border-radius: 10px;
@@ -93,16 +124,27 @@
     max-width: 300px;
 }
 
-.confirmation-modal p {
+.registration-page-confirmation-modal p {
     margin-bottom: 20px;
 }
 
-.confirmation-buttons {
+.registration-page-confirmation-buttons {
     display: flex;
     justify-content: space-between;
+    gap: 10px;
 }
 
-.confirm-button, .cancel-button {
+.registration-page-confirm-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.registration-page-cancel-button {
     background-color: #ea5558;
     color: white;
     border: none;
@@ -110,5 +152,42 @@
     border-radius: 5px;
     cursor: pointer;
     flex: 1;
-    margin: 0 5px;
+}
+
+/* Стили для модального окна лимита */
+.registration-page-limit-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.registration-page-limit-modal {
+    background-color: #39485b;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    width: 80%;
+    max-width: 300px;
+}
+
+.registration-page-limit-modal p {
+    margin-bottom: 20px;
+}
+
+.registration-page-ok-button {
+    background-color: #ea5558;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
 }
