@@ -40,22 +40,31 @@ export default function MainScreen() {
         }
     };
     return (
-        <div className="content" style={{ backgroundImage: `url(${photoUrl})` }}>
-            <div className="title"></div>
-            <div className="dates"></div>
-            <div className="stage"></div>
-            <div className="enter-number">
-                <input
-                    type="text"
-                    placeholder="Enter password"
-                    value={pinCode}
-                    onChange={handleInputChange}
+        <div className="content-wrapper">
+            {photoUrl && (
+                <img 
+                    src={photoUrl} 
+                    alt="Background" 
+                    className="background-image"
                 />
+            )}
+            <div className="content-overlay">
+                <div className="title"></div>
+                <div className="dates"></div>
+                <div className="stage"></div>
+                <div className="enter-number">
+                    <input
+                        type="text"
+                        placeholder="Enter password"
+                        value={pinCode}
+                        onChange={handleInputChange}
+                    />
+                </div>
+                {errorMessage && <div className="error-message">{errorMessage}</div>}
+                <button className="submit-button" onClick={checkCodeAndNavigate}>
+                    Continue
+                </button>
             </div>
-            {errorMessage && <div className="error-message">{errorMessage}</div>}
-            <button className="submit-button" onClick={checkCodeAndNavigate}>
-                Continue
-            </button>
         </div>
     );
 }

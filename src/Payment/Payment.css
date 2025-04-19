@@ -57,22 +57,25 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 20px 0;
 }
 
 .payment-page-participants-list {
     flex: 1;
     overflow-y: auto;
-    padding: 0 20px;
-    margin-bottom: 20px;
+    overflow-x: hidden;
+    margin-bottom: 10px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
 }
 
 .payment-page-participant-item {
     display: flex;
+    margin: 0 auto;
+    width: 90%;
+    max-width: 90%;
     align-items: center;
+    height: 20px;
+    margin-top: 10px;
     padding: 15px;
     border-radius: 8px;
     background-color: white;
@@ -86,18 +89,19 @@
 }
 
 .payment-page-radio-button {
-    margin-right: 15px;
+    margin-right: 10px;
     accent-color: #ea5558;
 }
 
 .payment-page-participant-id {
     font-weight: bold;
-    margin-right: 15px;
-    min-width: 30px;
+    margin-top: 4px;
+    min-width: 20px;
 }
 
 .payment-page-participant-name {
     flex-grow: 1;
+    margin-top: 4px;
     text-align: left;
     white-space: nowrap;
     overflow: hidden;

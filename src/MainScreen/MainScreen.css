@@ -19,6 +19,8 @@
     font-style: normal;
 }
 
+/* Ваши font-face остаются без изменений */
+
 body, html {
     margin: 0;
     padding: 0;
@@ -28,43 +30,48 @@ body, html {
     overflow: hidden;
 }
 
-body {
-    margin: 0;
-    padding: 0;
+.content-wrapper {
+    position: relative;
     width: 100%;
     height: 100%;
-    display: flex;
+    overflow: hidden;
 }
 
-.content {
+.background-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.content-overlay {
+    position: relative;
     display: flex;
-    display: -webkit-flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
     height: 100%;
-    background-image: url('./images/bg.png');
-    -webkit-background-size: cover;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     color: white;
+    z-index: 1;
 }
 
 .title {
-    margin-top: 7rem; /* Уменьшаем отступ сверху для поднятия заголовка */
+    margin-top: 7rem;
     font-weight: bold;
     font-family: 'Unbounded', sans-serif;
 }
 
 .dates {
-    margin-top: 0rem; /* Уменьшаем расстояние между заголовком и датами */
+    margin-top: 0rem;
     font-weight: bold;
     font-family: 'Unbounded', sans-serif;
 }
 
 .stage {
-    font-size: 1.3rem; /* Увеличиваем размер шрифта для стадии */
+    font-size: 1.3rem;
     font-weight: 300;
     font-family: 'Arimo-M';
 }
@@ -76,14 +83,14 @@ body {
     justify-content: center;
     margin-top: 50%;
     width: 80%;
-    font-size: 1rem; /* base */
+    font-size: 1rem;
     border: none;
-    color: #64748b; /* slate-700 */
+    color: #64748b;
 }
 
 .enter-number input {
     width: 100%;
-    padding: 1rem; /* Увеличиваем высоту */
+    padding: 1rem;
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 13px;
@@ -94,7 +101,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 5%; /* 9 */
+    margin-top: 5%;
     width: 129px;
     height: 45px;
     background-color: #EA5558;
@@ -107,7 +114,10 @@ body {
     border: none;
     text-align: center;
 }
+
 .error-message {
     margin-top: 5%;
     font-size: 2vh;
+    color: white;
+    text-shadow: 0 0 3px rgba(0,0,0,0.5);
 }
