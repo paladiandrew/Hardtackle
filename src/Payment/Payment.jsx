@@ -45,15 +45,12 @@ export default function Payment() {
             body: JSON.stringify({
               participantId: selectedParticipant,
               tgId: tgId,
-              returnUrl: `https://htcup.ru/main/${tgId}`
+              returnUrl: `https://htcup.ru/participants/${tgId}`
             })
           });
-      
+          
           const paymentData = await response.json();
-          console.log("Received payment data:", paymentData); // Логируем ответ
-      
           if (paymentData.confirmation?.confirmation_url) {
-            console.log("Redirecting to:", paymentData.confirmation.confirmation_url);
             window.location.href = paymentData.confirmation.confirmation_url; // Редирект
           } else {
             console.error("No confirmation URL found");
@@ -62,48 +59,6 @@ export default function Payment() {
           console.error("Payment error:", error);
         }
       };
-    
-    // Проверка статуса оплаты при возврате
-    useEffect(() => {
-        const checkPayment = async () => {
-            const paymentId = localStorage.getItem('yookassa_payment_id');
-            if (paymentId) {
-                console.log(paymentId)
-                try {
-                    const statusRes = await fetch(`https://api.yookassa.ru/v3/payments/${paymentId}`, {
-                        headers: {
-                            'Authorization': `Basic ${btoa('412158:live_KwWVtffxj-Ww7JIh70zoMQmtmNpZlVT4HwTwqIktluM')}`
-                        }
-                    });
-                    const payment = await statusRes.json();
-                    
-                    if (payment.status === 'succeeded') {
-                        // Подтверждаем оплату на нашем сервере
-                        const confirmRes = await fetch('https://htcupbackend.ru/api/payment/confirm', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                tgId: tgId,
-                                participantId: selectedParticipant.id,
-                                paymentData: payment // Отправляем все данные платежа
-                            })
-                        });
-                        
-                        if (confirmRes.ok) {
-                            localStorage.removeItem('yookassa_payment_id');
-                            navigate(`/main/${tgId}`);
-                        }
-                    }
-                } catch (error) {
-                    console.error('Ошибка проверки платежа:', error);
-                }
-            }
-        };
-        
-        checkPayment();
-    }, [navigate, tgId, selectedParticipant]);
 
     return (
         <div className="payment-container">
