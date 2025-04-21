@@ -57,7 +57,7 @@ export default function Registration() {
             {showLimitModal && (
                 <div className="registration-page-limit-overlay">
                     <div className="registration-page-limit-modal">
-                        <p>Вы достигли максимального количества регистраций (2 на пользователя)</p>
+                        <p>Вы достигли максимального количества регистраций (10 на пользователя)</p>
                         <button 
                             className="registration-page-ok-button" 
                             onClick={() => setShowLimitModal(false)}
