@@ -35,7 +35,7 @@ export default function Registration() {
 
             if (response.status === 400) {
                 const data = await response.json();
-                if (data.message === "Максимум 2 регистрации на пользователя") {
+                if (data.message === "Максимум 10 регистраций на пользователя") {
                     setShowLimitModal(true);
                     return;
                 }
