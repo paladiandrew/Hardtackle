@@ -30,14 +30,14 @@ body, html {
     overflow: hidden;
 }
 
-.content-wrapper {
+.fisrt-page-content-wrapper {
     position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
 }
 
-.background-image {
+.fisrt-page-background-image {
     position: fixed;
     top: 0;
     left: 0;
@@ -47,7 +47,7 @@ body, html {
     z-index: -1;
 }
 
-.content-overlay {
+.fisrt-page-content-overlay {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -58,25 +58,25 @@ body, html {
     z-index: 1;
 }
 
-.title {
+.fisrt-page-title {
     margin-top: 7rem;
     font-weight: bold;
     font-family: 'Unbounded', sans-serif;
 }
 
-.dates {
+.fisrt-page-dates {
     margin-top: 0rem;
     font-weight: bold;
     font-family: 'Unbounded', sans-serif;
 }
 
-.stage {
+.fisrt-page-stage {
     font-size: 1.3rem;
     font-weight: 300;
     font-family: 'Arimo-M';
 }
 
-.enter-number {
+.fisrt-page-enter-number {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -88,7 +88,7 @@ body, html {
     color: #64748b;
 }
 
-.enter-number input {
+.fisrt-page-enter-number input {
     width: 100%;
     padding: 1rem;
     font-size: 1rem;
@@ -97,7 +97,7 @@ body, html {
     box-sizing: border-box;
 }
 
-.submit-button {
+.fisrt-page-submit-button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -115,7 +115,7 @@ body, html {
     text-align: center;
 }
 
-.error-message {
+.fisrt-page-error-message {
     margin-top: 5%;
     font-size: 2vh;
     color: white;

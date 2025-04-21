@@ -40,19 +40,19 @@ export default function MainScreen() {
         }
     };
     return (
-        <div className="content-wrapper">
+        <div className="fisrt-page-content-wrapper">
             {photoUrl && (
                 <img 
                     src={photoUrl} 
                     alt="Background" 
-                    className="background-image"
+                    className="fisrt-page-background-image"
                 />
             )}
-            <div className="content-overlay">
-                <div className="title"></div>
-                <div className="dates"></div>
-                <div className="stage"></div>
-                <div className="enter-number">
+            <div className="fisrt-page-content-overlay">
+                <div className="fisrt-page-title"></div>
+                <div className="fisrt-page-dates"></div>
+                <div className="fisrt-page-stage"></div>
+                <div className="fisrt-page-enter-number">
                     <input
                         type="text"
                         placeholder="Enter password"
@@ -60,8 +60,8 @@ export default function MainScreen() {
                         onChange={handleInputChange}
                     />
                 </div>
-                {errorMessage && <div className="error-message">{errorMessage}</div>}
-                <button className="submit-button" onClick={checkCodeAndNavigate}>
+                {errorMessage && <div className="fisrt-page-error-message">{errorMessage}</div>}
+                <button className="fisrt-page-submit-button" onClick={checkCodeAndNavigate}>
                     Continue
                 </button>
             </div>
