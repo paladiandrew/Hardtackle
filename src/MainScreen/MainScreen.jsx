@@ -18,7 +18,7 @@ export default function MainScreen() {
          .then(response => response.blob())
          .then(blob => {
                 const url = URL.createObjectURL(blob);
-                setPhotoUrl(url);
+                document.querySelector('.fisrt-page-background-image').style.backgroundImage = `url(${url})`;
             });
     }, []);
     const checkCodeAndNavigate = async () => {
@@ -41,13 +41,7 @@ export default function MainScreen() {
     };
     return (
         <div className="fisrt-page-content-wrapper">
-            {photoUrl && (
-                <img 
-                    src={photoUrl} 
-                    alt="Background" 
-                    className="fisrt-page-background-image"
-                />
-            )}
+            <div className="fisrt-page-background-image"></div>
             <div className="fisrt-page-content-overlay">
                 <div className="fisrt-page-title"></div>
                 <div className="fisrt-page-dates"></div>
