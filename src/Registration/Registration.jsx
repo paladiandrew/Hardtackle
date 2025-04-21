@@ -8,6 +8,7 @@ export default function Registration() {
     const [error, setError] = useState(null);
     const [name, setName] = useState("");
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [showLimitModal, setShowLimitModal] = useState(false);
     const { tgId } = useParams();
     const navigate = useNavigate();
@@ -41,30 +42,33 @@ export default function Registration() {
             }
 
             if (response.ok) {
-                navigate(`/main/${tgId}`);
+                setShowSuccessModal(true); // Показываем окно успешной регистрации
             }
         } catch (error) {
             setError(error.message || "Ошибка регистрации");
         }
     };
 
-
     return (
         <div className="registration-page">
             {error && <ErrorModal message={error} />}
+            
+            {/* Модальное окно лимита регистраций */}
             {showLimitModal && (
                 <div className="registration-page-limit-overlay">
                     <div className="registration-page-limit-modal">
                         <p>Вы достигли максимального количества регистраций (2 на пользователя)</p>
                         <button 
-                        className="registration-page-ok-button" 
-                        onClick={() => setShowLimitModal(false)}
+                            className="registration-page-ok-button" 
+                            onClick={() => setShowLimitModal(false)}
                         >
                             OK
                         </button>
                     </div>
                 </div>
             )}
+            
+            {/* Модальное окно подтверждения регистрации */}
             {showConfirmation && (
                 <div className="registration-page-confirmation-overlay">
                     <div className="registration-page-confirmation-modal">
@@ -86,6 +90,24 @@ export default function Registration() {
                                 Да
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+            
+            {/* Новое модальное окно успешной регистрации */}
+            {showSuccessModal && (
+                <div className="registration-page-success-overlay">
+                    <div className="registration-page-success-modal">
+                        <p>Участник успешно зарегистрирован!</p>
+                        <button 
+                            className="registration-page-ok-button" 
+                            onClick={() => {
+                                setShowSuccessModal(false);
+                                navigate(`/main/${tgId}`);
+                            }}
+                        >
+                            OK
+                        </button>
                     </div>
                 </div>
             )}
