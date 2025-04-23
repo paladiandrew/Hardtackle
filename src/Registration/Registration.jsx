@@ -19,6 +19,15 @@ export default function Registration() {
 
     const handleRegister = async () => {
         if (!name.trim()) return;
+        const options = {
+            timeZone: 'Europe/Moscow',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          };
         
         try {
             const response = await fetch('https://htcupbackend.ru/api/register', {
@@ -29,7 +38,7 @@ export default function Registration() {
                 body: JSON.stringify({ 
                     tgId,
                     fullName: name,
-                    registrationDate: new Date().toISOString()
+                    registrationDate: new Date().toLocaleString('ru-RU', options)
                 }),
             });
 
