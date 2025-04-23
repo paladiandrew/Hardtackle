@@ -9,20 +9,27 @@ export default function Payment() {
     const { tgId } = useParams();
     const [participants, setParticipants] = useState([]);
     const [selectedParticipant, setSelectedParticipant] = useState(null);
+    const [maxQuantity, setMaxQuantity] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchParticipants = async () => {
+        const fetchData = async () => {
             try {
-                const response = await fetch(`https://htcupbackend.ru/api/payment/participants?tgId=${tgId}`);
-                const data = await response.json();
-                setParticipants(data);
+                // Загружаем данные турнира
+                const tournamentResponse = await fetch("https://htcupbackend.ru/api/tournaments/current");
+                const tournamentData = await tournamentResponse.json();
+                setMaxQuantity(tournamentData.maxQuantity || 0);
+
+                // Загружаем участников
+                const participantsResponse = await fetch(`https://htcupbackend.ru/api/payment/participants?tgId=${tgId}`);
+                const participantsData = await participantsResponse.json();
+                setParticipants(participantsData);
             } catch (error) {
-                setError(error.message || "Ошибка загрузки участников");
+                setError(error.message || "Ошибка загрузки данных");
             }
         };
         
-        fetchParticipants();
+        fetchData();
     }, [tgId]);
 
     const handleBack = () => {
@@ -58,6 +65,9 @@ export default function Payment() {
         }
     };
 
+    // Фильтруем участников по maxQuantity
+    const filteredParticipants = participants.filter(participant => participant.id <= maxQuantity);
+
     return (
         <div className="payment-page">
             {error && <ErrorModal message={error} />}
@@ -69,32 +79,38 @@ export default function Payment() {
             </div>
             
             <div className="payment-page-content">
-                <div className="payment-page-participants-list">
-                    {participants.map((participant) => (
-                        <div 
-                            key={participant.id} 
-                            className={`payment-page-participant-item ${selectedParticipant === participant.id ? "payment-page-selected" : ""}`}
-                            onClick={() => handleParticipantSelect(participant.id)}
-                        >
-                            <input
-                                type="radio"
-                                checked={selectedParticipant === participant.id}
-                                onChange={() => handleParticipantSelect(participant.id)}
-                                className="payment-page-radio-button"
-                            />
-                            <span className="payment-page-participant-id">{participant.id}</span>
-                            <span className="payment-page-participant-name">{participant.fullName}</span>
+                {filteredParticipants.length > 0 ? (
+                    <>
+                        <div className="payment-page-participants-list">
+                            {filteredParticipants.map((participant) => (
+                                <div 
+                                    key={participant.id} 
+                                    className={`payment-page-participant-item ${selectedParticipant === participant.id ? "payment-page-selected" : ""}`}
+                                    onClick={() => handleParticipantSelect(participant.id)}
+                                >
+                                    <input
+                                        type="radio"
+                                        checked={selectedParticipant === participant.id}
+                                        onChange={() => handleParticipantSelect(participant.id)}
+                                        className="payment-page-radio-button"
+                                    />
+                                    <span className="payment-page-participant-id">{participant.id}</span>
+                                    <span className="payment-page-participant-name">{participant.fullName}</span>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
-                
-                <button 
-                    className={`payment-page-button ${!selectedParticipant ? "payment-page-disabled" : ""}`}
-                    onClick={handlePayment}
-                    disabled={!selectedParticipant}
-                >
-                    Оплатить
-                </button>
+                        
+                        <button 
+                            className={`payment-page-button ${!selectedParticipant ? "payment-page-disabled" : ""}`}
+                            onClick={handlePayment}
+                            disabled={!selectedParticipant}
+                        >
+                            Оплатить
+                        </button>
+                    </>
+                ) : (
+                    <p className="payment-page-no-participants">Нет доступных участников для оплаты</p>
+                )}
             </div>
         </div>
     );

@@ -7,8 +7,10 @@ export default function MiniAppMain() {
     const navigate = useNavigate();
     const [tournamentStatus, setTournamentStatus] = useState({
         exists: false,
-        isRegistrationOpen: false
+        isRegistrationOpen: false,
+        maxQuantity: 0
     });
+    const [participants, setParticipants] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -20,22 +22,38 @@ export default function MiniAppMain() {
                 if (data) {
                     setTournamentStatus({
                         exists: true,
-                        isRegistrationOpen: data.isRegistrationOpen || false
+                        isRegistrationOpen: data.isRegistrationOpen || false,
+                        maxQuantity: data.maxQuantity || 0
                     });
                 }
             } catch (error) {
                 console.error("Error fetching tournament status:", error);
+            }
+        };
+
+        const fetchParticipants = async () => {
+            try {
+                const response = await fetch(`https://htcupbackend.ru/api/payment/participants?tgId=${tgId}`);
+                const data = await response.json();
+                setParticipants(data);
+            } catch (error) {
+                console.error("Error fetching participants:", error);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchTournamentStatus();
-    }, []);
+        fetchParticipants();
+    }, [tgId]);
 
     const navigateWithState = (path) => {
         navigate(`${path}/${tgId}`);
     };
+
+    // Проверяем, есть ли хотя бы один участник с id <= maxQuantity
+    const hasPayableParticipants = participants.length > 0 && 
+        participants.some(participant => participant.id <= tournamentStatus.maxQuantity);
 
     if (loading) {
         return (
@@ -67,9 +85,9 @@ export default function MiniAppMain() {
                     Список участников
                 </button>
                 <button 
-                    className={`miniapp-button ${!tournamentStatus.exists || !tournamentStatus.isRegistrationOpen ? "miniapp-button-disabled" : ""}`}
-                    onClick={() => tournamentStatus.exists && tournamentStatus.isRegistrationOpen && navigateWithState("/payment")}
-                    disabled={!tournamentStatus.exists || !tournamentStatus.isRegistrationOpen}
+                    className={`miniapp-button ${!tournamentStatus.exists || !tournamentStatus.isRegistrationOpen || !hasPayableParticipants ? "miniapp-button-disabled" : ""}`}
+                    onClick={() => tournamentStatus.exists && tournamentStatus.isRegistrationOpen && hasPayableParticipants && navigateWithState("/payment")}
+                    disabled={!tournamentStatus.exists || !tournamentStatus.isRegistrationOpen || !hasPayableParticipants}
                 >
                     Оплата
                 </button>
