@@ -8,7 +8,10 @@ export default function ParticipantsList() {
     const [error, setError] = useState(null);
     const [participants, setParticipants] = useState([]);
     const [markedParticipants, setMarkedParticipants] = useState([]);
-    const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
+    const [tournamentData, setTournamentData] = useState({ 
+        isRegistrationOpen: false, 
+        maxQuantity: 0 
+    });
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [selectedParticipant, setSelectedParticipant] = useState(null);
     const navigate = useNavigate();
@@ -28,7 +31,10 @@ export default function ParticipantsList() {
                 const markedData = await markedRes.json();
                 
                 setParticipants(participantsData);
-                setIsRegistrationOpen(tournamentData.isRegistrationOpen);
+                setTournamentData({
+                    isRegistrationOpen: tournamentData.isRegistrationOpen,
+                    maxQuantity: tournamentData.maxQuantity || 0
+                });
                 setMarkedParticipants(markedData.map(user => user.id));
             } catch (error) {
                 setError(error.message || "Ошибка загрузки данных");
@@ -43,8 +49,11 @@ export default function ParticipantsList() {
     };
 
     const handlePaymentClick = (participant) => {
-        setSelectedParticipant(participant);
-        setShowConfirmation(true);
+        // Проверяем, что участник в пределах лимита
+        if (participant.id <= tournamentData.maxQuantity) {
+            setSelectedParticipant(participant);
+            setShowConfirmation(true);
+        }
     };
 
     const confirmPayment = async () => {
@@ -93,23 +102,36 @@ export default function ParticipantsList() {
             </div>
             
             <div className="participants-list">
-                {participants.map((participant) => (
-                    <div 
-                        key={participant.id} 
-                        className={`participant-item ${participant.isPaid ? "paid" : "unpaid"}`}
-                    >
-                        <span className="participant-id">{participant.id}</span>
-                        <span className="participant-name">{participant.fullName}</span>
-                        {isRegistrationOpen && !participant.isPaid && !markedParticipants.includes(participant.id) && (
-                            <button 
-                                className="confirmation-payment-button"
-                                onClick={() => handlePaymentClick(participant)}
-                            >
-                                Ю
-                            </button>
-                        )}
-                    </div>
-                ))}
+                {participants.map((participant) => {
+                    const isWithinLimit = participant.id <= tournamentData.maxQuantity;
+                    const isMarked = markedParticipants.includes(participant.id);
+                    const showPaymentButton = 
+                        tournamentData.isRegistrationOpen && 
+                        !participant.isPaid && 
+                        !isMarked && 
+                        isWithinLimit;
+
+                    return (
+                        <div 
+                            key={participant.id} 
+                            className={`
+                                participant-item 
+                                ${participant.isPaid ? "paid" : ""}
+                                ${!isWithinLimit ? "disabled" : ""}
+                            `}
+                        >
+                            <span className="participant-id">{participant.id}</span>
+                            <span className="participant-name">{participant.fullName}</span>
+                            {showPaymentButton && (
+                                <button 
+                                    className="confirmation-payment-button"
+                                    onClick={() => handlePaymentClick(participant)}
+                                >
+                                </button>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

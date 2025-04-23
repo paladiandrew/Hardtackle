@@ -148,3 +148,13 @@
     flex: 1;
     margin: 0 5px;
 }
+
+.participant-item.disabled {
+    background-color: #e0e0e0;
+    color: #9e9e9e;
+}
+
+.participant-item.disabled .participant-id,
+.participant-item.disabled .participant-name {
+    color: #9e9e9e;
+}
