@@ -18,6 +18,7 @@ export default function Payment() {
                 // Загружаем данные турнира
                 const tournamentResponse = await fetch("https://htcupbackend.ru/api/tournaments/current");
                 const tournamentData = await tournamentResponse.json();
+                console.log(tournamentData.maxQuantity);
                 setMaxQuantity(tournamentData.maxQuantity || 0);
 
                 // Загружаем участников
