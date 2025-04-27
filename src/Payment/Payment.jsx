@@ -117,61 +117,66 @@ export default function Payment() {
             
             <div className="payment-page-content">
                 {/* Список оплаченных участников */}
-                {filteredPaidParticipants.length > 0 && (
-                    <div className="payment-paid-section">
-                        <h3 className="payment-section-title">Оплаченные участники</h3>
-                        <div className="payment-paid-list">
-                            {filteredPaidParticipants.map((participant) => (
-                                <div key={participant.id} className="payment-paid-item">
-                                    <span className="payment-paid-id">{participant.id}</span>
-                                    <span className="payment-paid-name">{participant.fullName}</span>
-                                    <span className="payment-paid-code">{participant.code}</span>
-                                    <button 
-                                        className="payment-unregister-button"
-                                        onClick={() => handleUnregister(participant.id)}
-                                    >
-                                        Снять с регистрации
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
+{filteredPaidParticipants.length > 0 && (
+    <div className="payment-paid-section">
+        <h3 className="payment-section-title">Оплаченные участники</h3>
+        <div className="payment-paid-list">
+            {filteredPaidParticipants.map((participant) => (
+                <div key={participant.id} className="payment-paid-item">
+                    <span className="payment-paid-id">{participant.id}</span>
+                    <div className="payment-paid-name-code">
+                        <span className="payment-paid-name">{participant.fullName}</span>
+                        <span className="payment-paid-code">{participant.code}</span>
                     </div>
-                )}
+                    <button 
+                        className="payment-unregister-button"
+                        onClick={() => handleUnregister(participant.id)}
+                    >
+                        Снять с регистрации
+                    </button>
+                </div>
+            ))}
+        </div>
+    </div>
+)}
 
-                {/* Список участников для оплаты */}
-                {filteredParticipants.length > 0 ? (
-                    <>
-                        <h3 className="payment-section-title">Участники для оплаты</h3>
-                        <div className="payment-page-participants-list">
-                            {filteredParticipants.map((participant) => (
-                                <div 
-                                    key={participant.id} 
-                                    className={`payment-page-participant-item ${selectedParticipant === participant.id ? "payment-page-selected" : ""}`}
-                                    onClick={() => handleParticipantSelect(participant.id)}
-                                >
-                                    <input
-                                        type="radio"
-                                        checked={selectedParticipant === participant.id}
-                                        onChange={() => handleParticipantSelect(participant.id)}
-                                        className="payment-page-radio-button"
-                                    />
-                                    <span className="payment-page-participant-id">{participant.id}</span>
-                                    <span className="payment-page-participant-name">{participant.fullName}</span>
-                                </div>
-                            ))}
-                        </div>
-                        
-                        <button 
-                            className={`payment-page-button ${!selectedParticipant ? "payment-page-disabled" : ""}`}
-                            onClick={handlePayment}
-                            disabled={!selectedParticipant}
-                        >
-                            Оплатить
-                        </button>
-                    </>
-                ) : (
-                    <p className="payment-page-no-participants">Нет доступных участников для оплаты</p>
-                )}
+{/* Список участников для оплаты */}
+{filteredParticipants.length > 0 ? (
+    <>
+        <h3 className="payment-section-title">Участники для оплаты</h3>
+        <div className="payment-page-participants-list">
+            {filteredParticipants.map((participant) => (
+                <div 
+                    key={participant.id} 
+                    className={`payment-page-participant-item ${selectedParticipant === participant.id ? "payment-page-selected" : ""}`}
+                    onClick={() => handleParticipantSelect(participant.id)}
+                >
+                    <input
+                        type="radio"
+                        checked={selectedParticipant === participant.id}
+                        onChange={() => handleParticipantSelect(participant.id)}
+                        className="payment-page-radio-button"
+                    />
+                    <span className="payment-page-participant-id">{participant.id}</span>
+                    <div className="payment-paid-name-code">
+                        <span className="payment-paid-name">{participant.fullName}</span>
+                        <span className="payment-paid-code">{participant.code}</span>
+                    </div>
+                </div>
+            ))}
+        </div>
+        
+        <button 
+            className={`payment-page-button ${!selectedParticipant ? "payment-page-disabled" : ""}`}
+            onClick={handlePayment}
+            disabled={!selectedParticipant}
+        >
+            Оплатить
+        </button>
+    </>
+) : (
+    <p className="payment-page-no-participants">Нет доступных участников для оплаты</p>
+)}
             </div>
         </div>
     );

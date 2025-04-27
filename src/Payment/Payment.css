@@ -50,6 +50,17 @@
     color: #e8f5e9;
     font-size: 20px;
     line-height: 30px;
+    text-align: center;
+    width: 100%;
+}
+
+/* Стили для заголовков секций */
+.payment-section-title {
+    color: #ffffff;
+    text-align: center;
+    margin: 15px 0 10px;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 /* Основное содержимое */
@@ -57,25 +68,27 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    padding: 0 15px;
+    overflow-y: auto;
 }
 
-.payment-page-participants-list {
+/* Список участников */
+.payment-page-participants-list,
+.payment-paid-list {
     flex: 1;
     overflow-y: auto;
-    overflow-x: hidden;
     margin-bottom: 10px;
     display: flex;
     flex-direction: column;
+    gap: 10px;
 }
 
-.payment-page-participant-item {
+/* Стили для карточек участников */
+.payment-page-participant-item,
+.payment-paid-item {
     display: flex;
-    margin: 0 auto;
-    width: 90%;
-    max-width: 90%;
     align-items: center;
-    height: 20px;
-    margin-top: 10px;
+    width: 100%;
     padding: 15px;
     border-radius: 8px;
     background-color: white;
@@ -88,24 +101,43 @@
     border: 1px solid #ea5558;
 }
 
+/* Стили для оплаченных участников */
+.payment-paid-item {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    grid-template-rows: auto auto;
+    gap: 5px 10px;
+    cursor: default;
+}
+
+.payment-paid-id {
+    grid-row: span 2;
+    font-weight: bold;
+    font-size: 18px;
+    align-self: center;
+    color: #333;
+}
+
+.payment-paid-name-code {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment-paid-name {
+    font-weight: bold;
+    color: #333;
+}
+
+.payment-paid-code {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Кнопки */
 .payment-page-radio-button {
     margin-right: 10px;
     accent-color: #ea5558;
-}
-
-.payment-page-participant-id {
-    font-weight: bold;
-    margin-top: 4px;
-    min-width: 20px;
-}
-
-.payment-page-participant-name {
-    flex-grow: 1;
-    margin-top: 4px;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .payment-page-button {
@@ -116,7 +148,7 @@
     border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
-    margin: 0 20px 20px;
+    margin: 10px 0 20px;
     transition: background-color 0.3s;
 }
 
@@ -128,4 +160,32 @@
     background-color: #cccccc;
     color: #666666;
     cursor: not-allowed;
+}
+
+.payment-unregister-button {
+    background-color: #ea5558;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    grid-column: 2;
+}
+
+.payment-unregister-button:hover {
+    background-color: #d04a4d;
+}
+
+/* Сообщение об отсутствии участников */
+.payment-page-no-participants {
+    color: white;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Секция оплаченных участников */
+.payment-paid-section {
+    margin-bottom: 20px;
 }
