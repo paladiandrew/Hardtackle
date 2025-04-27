@@ -8,6 +8,7 @@ export default function Payment() {
     const [error, setError] = useState(null);
     const { tgId } = useParams();
     const [participants, setParticipants] = useState([]);
+    const [paidParticipants, setPaidParticipants] = useState([]);
     const [selectedParticipant, setSelectedParticipant] = useState(null);
     const [maxQuantity, setMaxQuantity] = useState(0);
     const navigate = useNavigate();
@@ -18,13 +19,17 @@ export default function Payment() {
                 // Загружаем данные турнира
                 const tournamentResponse = await fetch("https://htcupbackend.ru/api/tournaments/current");
                 const tournamentData = await tournamentResponse.json();
-                console.log(tournamentData.maxQuantity);
                 setMaxQuantity(tournamentData.maxQuantity || 0);
 
-                // Загружаем участников
+                // Загружаем участников для оплаты
                 const participantsResponse = await fetch(`https://htcupbackend.ru/api/payment/participants?tgId=${tgId}`);
                 const participantsData = await participantsResponse.json();
                 setParticipants(participantsData);
+
+                // Загружаем уже оплаченных участников
+                const paidResponse = await fetch(`https://htcupbackend.ru/api/payment/paid-participants?tgId=${tgId}`);
+                const paidData = await paidResponse.json();
+                setPaidParticipants(paidData);
             } catch (error) {
                 setError(error.message || "Ошибка загрузки данных");
             }
@@ -66,8 +71,39 @@ export default function Payment() {
         }
     };
 
+    const handleUnregister = async (userId) => {
+        try {
+            const response = await fetch('https://htcupbackend.ru/api/payment/unregister', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, tgId })
+            });
+            
+            const result = await response.json();
+            if (result.success) {
+                // Обновляем списки после успешной отмены
+                const updatedPaid = paidParticipants.filter(p => p.id !== userId);
+                setPaidParticipants(updatedPaid);
+                
+                // Если отмененный участник был в списке для оплаты, добавляем его обратно
+                const unregisteredParticipant = paidParticipants.find(p => p.id === userId);
+                if (unregisteredParticipant) {
+                    setParticipants(prev => [...prev, { 
+                        ...unregisteredParticipant, 
+                        isPaid: false 
+                    }].sort((a, b) => a.id - b.id));
+                }
+            } else {
+                setError(result.error || "Ошибка при отмене регистрации");
+            }
+        } catch (error) {
+            setError(error.message || "Ошибка при отмене регистрации");
+        }
+    };
+
     // Фильтруем участников по maxQuantity
     const filteredParticipants = participants.filter(participant => participant.id <= maxQuantity);
+    const filteredPaidParticipants = paidParticipants.filter(participant => participant.id <= maxQuantity);
 
     return (
         <div className="payment-page">
@@ -80,8 +116,32 @@ export default function Payment() {
             </div>
             
             <div className="payment-page-content">
+                {/* Список оплаченных участников */}
+                {filteredPaidParticipants.length > 0 && (
+                    <div className="payment-paid-section">
+                        <h3 className="payment-section-title">Оплаченные участники</h3>
+                        <div className="payment-paid-list">
+                            {filteredPaidParticipants.map((participant) => (
+                                <div key={participant.id} className="payment-paid-item">
+                                    <span className="payment-paid-id">{participant.id}</span>
+                                    <span className="payment-paid-name">{participant.fullName}</span>
+                                    <span className="payment-paid-code">{participant.code}</span>
+                                    <button 
+                                        className="payment-unregister-button"
+                                        onClick={() => handleUnregister(participant.id)}
+                                    >
+                                        Снять с регистрации
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Список участников для оплаты */}
                 {filteredParticipants.length > 0 ? (
                     <>
+                        <h3 className="payment-section-title">Участники для оплаты</h3>
                         <div className="payment-page-participants-list">
                             {filteredParticipants.map((participant) => (
                                 <div 
