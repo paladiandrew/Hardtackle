@@ -11,6 +11,8 @@ export default function Payment() {
     const [paidParticipants, setPaidParticipants] = useState([]);
     const [selectedParticipant, setSelectedParticipant] = useState(null);
     const [maxQuantity, setMaxQuantity] = useState(0);
+    const [showUnregisterConfirm, setShowUnregisterConfirm] = useState(false);
+    const [participantToUnregister, setParticipantToUnregister] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,6 +26,7 @@ export default function Payment() {
                 // Загружаем участников для оплаты
                 const participantsResponse = await fetch(`https://htcupbackend.ru/api/payment/participants?tgId=${tgId}`);
                 const participantsData = await participantsResponse.json();
+                console.log(participantsData);
                 setParticipants(participantsData);
 
                 // Загружаем уже оплаченных участников
@@ -71,8 +74,14 @@ export default function Payment() {
         }
     };
 
-    const handleUnregister = async (userId) => {
+    const confirmUnregister = (userId) => {
+        setParticipantToUnregister(userId);
+        setShowUnregisterConfirm(true);
+    };
+
+    const handleUnregister = async () => {
         try {
+            const userId = participantToUnregister;
             const response = await fetch('https://htcupbackend.ru/api/payment/unregister', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -81,7 +90,10 @@ export default function Payment() {
             
             const result = await response.json();
             if (result.success) {
-                // Обновляем списки после успешной отмены
+                // Показываем уведомление об успешном снятии
+                setError(result.message || "Участник успешно снят с регистрации");
+                
+                // Обновляем списки
                 const updatedPaid = paidParticipants.filter(p => p.id !== userId);
                 setPaidParticipants(updatedPaid);
                 
@@ -93,21 +105,70 @@ export default function Payment() {
                         isPaid: false 
                     }].sort((a, b) => a.id - b.id));
                 }
+    
+                // Если это был последний участник, переходим на главную
+                if (result.remainingUsersCount === 0) {
+                    setTimeout(() => navigate(`/main/${tgId}`), 1500);
+                }
             } else {
                 setError(result.error || "Ошибка при отмене регистрации");
             }
         } catch (error) {
             setError(error.message || "Ошибка при отмене регистрации");
+        } finally {
+            setShowUnregisterConfirm(false);
+            setParticipantToUnregister(null);
         }
+    };
+
+    const copyToClipboard = (code) => {
+        navigator.clipboard.writeText(code)
+            .then(() => {
+                // Можно добавить уведомление об успешном копировании
+                console.log('Код скопирован в буфер обмена');
+            })
+            .catch(err => {
+                console.error('Ошибка при копировании:', err);
+            });
     };
 
     // Фильтруем участников по maxQuantity
     const filteredParticipants = participants.filter(participant => participant.id <= maxQuantity);
     const filteredPaidParticipants = paidParticipants.filter(participant => participant.id <= maxQuantity);
 
+    // Проверяем, является ли текущий пользователь участником
+    const isCurrentUserParticipant = (participantTgId) => {
+        return participantTgId === tgId;
+    };
+
     return (
         <div className="payment-page">
             {error && <ErrorModal message={error} />}
+            
+            {/* Модальное окно подтверждения отмены регистрации */}
+            {showUnregisterConfirm && (
+                <div className="payment-confirm-modal">
+                    <div className="payment-confirm-content">
+                        <h3>Подтверждение</h3>
+                        <p>Вы действительно хотите снять участника с регистрации?</p>
+                        <div className="payment-confirm-buttons">
+                            <button 
+                                className="payment-confirm-button payment-confirm-cancel"
+                                onClick={() => setShowUnregisterConfirm(false)}
+                            >
+                                Отмена
+                            </button>
+                            <button 
+                                className="payment-confirm-button payment-confirm-ok"
+                                onClick={handleUnregister}
+                            >
+                                Да
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            
             <div className="payment-page-header">
                 <button className="payment-page-back-button" onClick={handleBack}>
                     <img src={backImage} alt="Back" className="payment-page-back-icon" />
@@ -117,66 +178,97 @@ export default function Payment() {
             
             <div className="payment-page-content">
                 {/* Список оплаченных участников */}
-{filteredPaidParticipants.length > 0 && (
-    <div className="payment-paid-section">
-        <h3 className="payment-section-title">Оплаченные участники</h3>
-        <div className="payment-paid-list">
-            {filteredPaidParticipants.map((participant) => (
-                <div key={participant.id} className="payment-paid-item">
-                    <span className="payment-paid-id">{participant.id}</span>
-                    <div className="payment-paid-name-code">
-                        <span className="payment-paid-name">{participant.fullName}</span>
-                        <span className="payment-paid-code">{participant.code}</span>
+                {filteredPaidParticipants.length > 0 && (
+                    <div className="payment-paid-section">
+                        <h3 className="payment-section-title">Оплаченные участники</h3>
+                        <div className="payment-paid-list">
+                            {filteredPaidParticipants.map((participant) => (
+                                <div key={participant.id} className="payment-paid-item">
+                                    <span className="payment-paid-id">{participant.id}</span>
+                                    <div className="payment-paid-info">
+                                        <div className="payment-paid-name-code">
+                                            <span className="payment-paid-name">{participant.fullName}</span>
+                                            <button 
+                                                className="payment-code-button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    copyToClipboard(participant.code);
+                                                }}
+                                            >
+                                                {participant.code}
+                                            </button>
+                                        </div>
+                                        <button 
+                                            className="payment-unregister-button"
+                                            onClick={() => confirmUnregister(participant.id)}
+                                        >
+                                            Снять с регистрации
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                    <button 
-                        className="payment-unregister-button"
-                        onClick={() => handleUnregister(participant.id)}
-                    >
-                        Снять с регистрации
-                    </button>
-                </div>
-            ))}
-        </div>
-    </div>
-)}
+                )}
 
-{/* Список участников для оплаты */}
-{filteredParticipants.length > 0 ? (
-    <>
-        <h3 className="payment-section-title">Участники для оплаты</h3>
-        <div className="payment-page-participants-list">
-            {filteredParticipants.map((participant) => (
-                <div 
-                    key={participant.id} 
-                    className={`payment-page-participant-item ${selectedParticipant === participant.id ? "payment-page-selected" : ""}`}
-                    onClick={() => handleParticipantSelect(participant.id)}
-                >
-                    <input
-                        type="radio"
-                        checked={selectedParticipant === participant.id}
-                        onChange={() => handleParticipantSelect(participant.id)}
-                        className="payment-page-radio-button"
-                    />
-                    <span className="payment-page-participant-id">{participant.id}</span>
-                    <div className="payment-paid-name-code">
-                        <span className="payment-paid-name">{participant.fullName}</span>
-                        <span className="payment-paid-code">{participant.code}</span>
-                    </div>
-                </div>
-            ))}
-        </div>
-        
-        <button 
-            className={`payment-page-button ${!selectedParticipant ? "payment-page-disabled" : ""}`}
-            onClick={handlePayment}
-            disabled={!selectedParticipant}
-        >
-            Оплатить
-        </button>
-    </>
-) : (
-    <p className="payment-page-no-participants">Нет доступных участников для оплаты</p>
-)}
+                {/* Список участников для оплаты */}
+                {filteredParticipants.length > 0 ? (
+                    <>
+                        <h3 className="payment-section-title">Участники для оплаты</h3>
+                        <div className="payment-page-participants-list">
+                            {filteredParticipants.map((participant) => (
+                                <div 
+                                key={participant.id} 
+                                className={`payment-page-participant-item ${selectedParticipant === participant.id ? "payment-page-selected" : ""}`}
+                                onClick={() => handleParticipantSelect(participant.id)}
+                            >
+                                <input
+                                    type="radio"
+                                    checked={selectedParticipant === participant.id}
+                                    onChange={() => handleParticipantSelect(participant.id)}
+                                    className="payment-page-radio-button"
+                                />
+                                <span className="payment-page-participant-id">{participant.id}</span>
+                                <div className="payment-participant-info">
+                                    <div className="payment-paid-name-code">
+                                        <span className="payment-paid-name">{participant.fullName}</span>
+                                        <button 
+                                            className="payment-code-button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                copyToClipboard(participant.code);
+                                            }}
+                                        >
+                                            {participant.code}
+                                        </button>
+                                    </div>
+                                    {isCurrentUserParticipant(participant.tgId) && (
+                                        <button 
+                                            className="payment-unregister-button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                confirmUnregister(participant.id);
+                                            }}
+                                        >
+                                            Снять с регистрации
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                            ))}
+                        </div>
+                        
+                        <button 
+                            className={`payment-page-button ${!selectedParticipant ? "payment-page-disabled" : ""}`}
+                            onClick={handlePayment}
+                            disabled={!selectedParticipant}
+                        >
+                            Оплатить
+                        </button>
+                    </>
+                ) : (
+                    <p className="payment-page-no-participants">Нет доступных участников для оплаты</p>
+                )}
             </div>
         </div>
     );

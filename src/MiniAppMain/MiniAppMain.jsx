@@ -11,6 +11,7 @@ export default function MiniAppMain() {
         maxQuantity: 0
     });
     const [participants, setParticipants] = useState([]);
+    const [paidParticipants, setPaidParticipants] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -33,9 +34,16 @@ export default function MiniAppMain() {
 
         const fetchParticipants = async () => {
             try {
-                const response = await fetch(`https://htcupbackend.ru/api/payment/participants?tgId=${tgId}`);
-                const data = await response.json();
-                setParticipants(data);
+                const [unpaidResponse, paidResponse] = await Promise.all([
+                    fetch(`https://htcupbackend.ru/api/payment/participants?tgId=${tgId}`),
+                    fetch(`https://htcupbackend.ru/api/payment/paid-participants?tgId=${tgId}`)
+                ]);
+                
+                const unpaidData = await unpaidResponse.json();
+                const paidData = await paidResponse.json();
+                
+                setParticipants(unpaidData);
+                setPaidParticipants(paidData);
             } catch (error) {
                 console.error("Error fetching participants:", error);
             } finally {
@@ -51,9 +59,8 @@ export default function MiniAppMain() {
         navigate(`${path}/${tgId}`);
     };
 
-    // Проверяем, есть ли хотя бы один участник с id <= maxQuantity
-    const hasPayableParticipants = participants.length > 0 && 
-        participants.some(participant => participant.id <= tournamentStatus.maxQuantity);
+    // Проверяем, есть ли участники для оплаты (неоплаченные) или уже оплаченные
+    const hasAnyParticipants = participants.length > 0 || paidParticipants.length > 0;
 
     if (loading) {
         return (
@@ -85,9 +92,9 @@ export default function MiniAppMain() {
                     Список участников
                 </button>
                 <button 
-                    className={`miniapp-button ${!tournamentStatus.exists || !tournamentStatus.isRegistrationOpen || !hasPayableParticipants ? "miniapp-button-disabled" : ""}`}
-                    onClick={() => tournamentStatus.exists && tournamentStatus.isRegistrationOpen && hasPayableParticipants && navigateWithState("/payment")}
-                    disabled={!tournamentStatus.exists || !tournamentStatus.isRegistrationOpen || !hasPayableParticipants}
+                    className={`miniapp-button ${!tournamentStatus.exists || !hasAnyParticipants ? "miniapp-button-disabled" : ""}`}
+                    onClick={() => tournamentStatus.exists && hasAnyParticipants && navigateWithState("/payment")}
+                    disabled={!tournamentStatus.exists || !hasAnyParticipants}
                 >
                     Оплата
                 </button>
