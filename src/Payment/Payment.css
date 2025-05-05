@@ -102,6 +102,7 @@
     cursor: pointer;
     box-sizing: border-box;
     gap: 10px;
+    min-height: 70px;
 }
 
 .payment-page-participant-item.payment-page-selected {
@@ -109,7 +110,7 @@
     border: 1px solid #ea5558;
 }
 
-/* Левая часть - ID (и радиобаттон для неоплаченных) */
+/* Левая часть - ID и радиобаттон */
 .payment-page-radio-container {
     display: flex;
     align-items: center;
@@ -124,7 +125,6 @@
     height: 18px;
 }
 
-/* Обновленные стили для ID участников */
 .payment-page-participant-id,
 .payment-paid-id {
     font-weight: bold;
@@ -133,18 +133,18 @@
     min-width: 25px;
     text-align: center;
     display: flex;
-    align-items: center; /* Центрируем по вертикали */
+    align-items: center;
     justify-content: center;
-    height: 100%; /* Занимает всю высоту родителя */
+    height: 100%;
 }
-
 
 /* Центральная часть - фио и кнопка отмены */
 .payment-participant-info {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 5px; /* Уменьшен отступ между строками с 8px до 5px */
     justify-content: center;
 }
 
@@ -154,6 +154,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 100%;
 }
 
 .payment-unregister-button {
@@ -173,11 +174,11 @@
     background-color: #d04a4d;
 }
 
-/* Правая часть - кнопка с кодом */
+/* Правая часть - кнопка с кодом (ширина 50px) */
 .payment-code-container {
     display: flex;
     align-items: stretch;
-    margin-left: auto;
+    width: 50px; /* Установлена ширина 50px */
 }
 
 .payment-code-button {
@@ -185,24 +186,25 @@
     color: white;
     border: none;
     border-radius: 5px;
-    padding: 0 20px;
-    font-size: 16px;
+    padding: 0 5px; /* Уменьшены отступы */
+    font-size: 14px; /* Уменьшен размер шрифта */
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
-    min-width: 90px;
+    min-width: 50px; /* Установлена минимальная ширина */
     display: flex;
     align-items: center;
     justify-content: center;
     white-space: nowrap;
     height: 100%;
+    width: 100%;
 }
 
 .payment-code-button:hover {
     background-color: #3367d6;
 }
 
-/* Кнопка оплаты */
+/* Остальные стили остаются без изменений */
 .payment-page-button {
     background-color: #ea5558;
     color: white;
@@ -219,13 +221,6 @@
 .payment-page-button:hover {
     background-color: #d04a4d;
 }
-/* Для оплаченных участников убираем flex у ID */
-.payment-paid-id {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-}
 
 .payment-page-button.payment-page-disabled {
     background-color: #cccccc;
@@ -233,21 +228,17 @@
     cursor: not-allowed;
 }
 
-/* Сообщение об отсутствии участников */
 .payment-page-no-participants {
     color: white;
     text-align: center;
     margin-top: 20px;
 }
-/* Обновленные стили для контейнера участника */
 
-/* Секция оплаченных участников */
 .payment-paid-section {
     margin-bottom: 20px;
     width: 100%;
 }
 
-/* Модальное окно подтверждения */
 .payment-confirm-modal {
     position: fixed;
     top: 0;
