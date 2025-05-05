@@ -181,33 +181,35 @@ export default function Payment() {
                     <div className="payment-paid-section">
                         <h3 className="payment-section-title">Оплаченные участники</h3>
                         <div className="payment-paid-list">
-                            {filteredPaidParticipants.map((participant) => (
-                                <div key={participant.id} className="payment-paid-item">
-                                    <span className="payment-paid-id">{participant.id}</span>
-                                    
-                                    <div className="payment-participant-info">
-                                        <span className="payment-paid-name">{participant.fullName}</span>
-                                        <button 
-                                            className="payment-unregister-button"
-                                            onClick={() => confirmUnregister(participant.id)}
-                                        >
-                                            Снять с регистрации
-                                        </button>
-                                    </div>
-                                    
-                                    <div className="payment-code-container">
-                                        <button 
-                                            className="payment-code-button"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                copyToClipboard(participant.code);
-                                            }}
-                                        >
-                                            {participant.code}
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
+                        {filteredPaidParticipants.map((participant) => (
+    <div key={participant.id} className="payment-paid-item">
+        <div className="payment-page-radio-container">
+            <span className="payment-paid-id">{participant.id}</span>
+        </div>
+        
+        <div className="payment-participant-info">
+            <span className="payment-paid-name">{participant.fullName}</span>
+            <button 
+                className="payment-unregister-button"
+                onClick={() => confirmUnregister(participant.id)}
+            >
+                Снять с регистрации
+            </button>
+        </div>
+        
+        <div className="payment-code-container">
+            <button 
+                className="payment-code-button"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    copyToClipboard(participant.code);
+                }}
+            >
+                {participant.code}
+            </button>
+        </div>
+    </div>
+))}
                         </div>
                     </div>
                 )}

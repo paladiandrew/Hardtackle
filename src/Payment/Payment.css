@@ -124,6 +124,7 @@
     height: 18px;
 }
 
+/* Обновленные стили для ID участников */
 .payment-page-participant-id,
 .payment-paid-id {
     font-weight: bold;
@@ -131,7 +132,12 @@
     color: #333;
     min-width: 25px;
     text-align: center;
+    display: flex;
+    align-items: center; /* Центрируем по вертикали */
+    justify-content: center;
+    height: 100%; /* Занимает всю высоту родителя */
 }
+
 
 /* Центральная часть - фио и кнопка отмены */
 .payment-participant-info {
@@ -213,6 +219,13 @@
 .payment-page-button:hover {
     background-color: #d04a4d;
 }
+/* Для оплаченных участников убираем flex у ID */
+.payment-paid-id {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
 
 .payment-page-button.payment-page-disabled {
     background-color: #cccccc;
@@ -226,6 +239,7 @@
     text-align: center;
     margin-top: 20px;
 }
+/* Обновленные стили для контейнера участника */
 
 /* Секция оплаченных участников */
 .payment-paid-section {
