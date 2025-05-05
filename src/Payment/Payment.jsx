@@ -145,7 +145,6 @@ export default function Payment() {
         <div className="payment-page">
             {error && <ErrorModal message={error} />}
             
-            {/* Модальное окно подтверждения отмены регистрации */}
             {showUnregisterConfirm && (
                 <div className="payment-confirm-modal">
                     <div className="payment-confirm-content">
@@ -177,7 +176,7 @@ export default function Payment() {
             </div>
             
             <div className="payment-page-content">
-                {/* Список оплаченных участников */}
+                {/* Оплаченные участники */}
                 {filteredPaidParticipants.length > 0 && (
                     <div className="payment-paid-section">
                         <h3 className="payment-section-title">Оплаченные участники</h3>
@@ -185,19 +184,9 @@ export default function Payment() {
                             {filteredPaidParticipants.map((participant) => (
                                 <div key={participant.id} className="payment-paid-item">
                                     <span className="payment-paid-id">{participant.id}</span>
-                                    <div className="payment-paid-info">
-                                        <div className="payment-paid-name-code">
-                                            <span className="payment-paid-name">{participant.fullName}</span>
-                                            <button 
-                                                className="payment-code-button"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    copyToClipboard(participant.code);
-                                                }}
-                                            >
-                                                {participant.code}
-                                            </button>
-                                        </div>
+                                    
+                                    <div className="payment-participant-info">
+                                        <span className="payment-paid-name">{participant.fullName}</span>
                                         <button 
                                             className="payment-unregister-button"
                                             onClick={() => confirmUnregister(participant.id)}
@@ -205,33 +194,8 @@ export default function Payment() {
                                             Снять с регистрации
                                         </button>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* Список участников для оплаты */}
-                {filteredParticipants.length > 0 ? (
-                    <>
-                        <h3 className="payment-section-title">Участники для оплаты</h3>
-                        <div className="payment-page-participants-list">
-                            {filteredParticipants.map((participant) => (
-                                <div 
-                                key={participant.id} 
-                                className={`payment-page-participant-item ${selectedParticipant === participant.id ? "payment-page-selected" : ""}`}
-                                onClick={() => handleParticipantSelect(participant.id)}
-                            >
-                                <input
-                                    type="radio"
-                                    checked={selectedParticipant === participant.id}
-                                    onChange={() => handleParticipantSelect(participant.id)}
-                                    className="payment-page-radio-button"
-                                />
-                                <span className="payment-page-participant-id">{participant.id}</span>
-                                <div className="payment-participant-info">
-                                    <div className="payment-paid-name-code">
-                                        <span className="payment-paid-name">{participant.fullName}</span>
+                                    
+                                    <div className="payment-code-container">
                                         <button 
                                             className="payment-code-button"
                                             onClick={(e) => {
@@ -242,19 +206,60 @@ export default function Payment() {
                                             {participant.code}
                                         </button>
                                     </div>
-                                    {isCurrentUserParticipant(participant.tgId) && (
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Участники для оплаты */}
+                {filteredParticipants.length > 0 ? (
+                    <>
+                        <h3 className="payment-section-title">Участники для оплаты</h3>
+                        <div className="payment-page-participants-list">
+                            {filteredParticipants.map((participant) => (
+                                <div 
+                                    key={participant.id} 
+                                    className={`payment-page-participant-item ${selectedParticipant === participant.id ? "payment-page-selected" : ""}`}
+                                    onClick={() => handleParticipantSelect(participant.id)}
+                                >
+                                    <div className="payment-page-radio-container">
+                                        <input
+                                            type="radio"
+                                            checked={selectedParticipant === participant.id}
+                                            onChange={() => handleParticipantSelect(participant.id)}
+                                            className="payment-page-radio-button"
+                                        />
+                                        <span className="payment-page-participant-id">{participant.id}</span>
+                                    </div>
+                                    
+                                    <div className="payment-participant-info">
+                                        <span className="payment-paid-name">{participant.fullName}</span>
+                                        {isCurrentUserParticipant(participant.tgId) && (
+                                            <button 
+                                                className="payment-unregister-button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    confirmUnregister(participant.id);
+                                                }}
+                                            >
+                                                Снять с регистрации
+                                            </button>
+                                        )}
+                                    </div>
+                                    
+                                    <div className="payment-code-container">
                                         <button 
-                                            className="payment-unregister-button"
+                                            className="payment-code-button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                confirmUnregister(participant.id);
+                                                copyToClipboard(participant.code);
                                             }}
                                         >
-                                            Снять с регистрации
+                                            {participant.code}
                                         </button>
-                                    )}
+                                    </div>
                                 </div>
-                            </div>
                             ))}
                         </div>
                         
