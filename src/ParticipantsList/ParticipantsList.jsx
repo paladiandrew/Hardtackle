@@ -30,7 +30,9 @@ export default function ParticipantsList() {
                 const tournamentData = await tournamentRes.json();
                 const markedData = await markedRes.json();
                 
-                setParticipants(participantsData);
+                // Сортируем участников по ID перед сохранением
+                const sortedParticipants = [...participantsData].sort((a, b) => a.id - b.id);
+                setParticipants(sortedParticipants);
                 setTournamentData({
                     isRegistrationOpen: tournamentData.isRegistrationOpen,
                     maxQuantity: tournamentData.maxQuantity || 0
@@ -49,8 +51,11 @@ export default function ParticipantsList() {
     };
 
     const handlePaymentClick = (participant) => {
+        // Получаем порядковый номер участника
+        const participantNumber = participants.findIndex(p => p.id === participant.id) + 1;
+        
         // Проверяем, что участник в пределах лимита
-        if (participant.id <= tournamentData.maxQuantity) {
+        if (participantNumber <= tournamentData.maxQuantity) {
             setSelectedParticipant(participant);
             setShowConfirmation(true);
         }
@@ -102,8 +107,9 @@ export default function ParticipantsList() {
             </div>
             
             <div className="participants-list">
-                {participants.map((participant) => {
-                    const isWithinLimit = participant.id <= tournamentData.maxQuantity;
+                {participants.map((participant, index) => {
+                    const participantNumber = index + 1;
+                    const isWithinLimit = participantNumber <= tournamentData.maxQuantity;
                     const isMarked = markedParticipants.includes(participant.id);
                     const showPaymentButton = 
                         tournamentData.isRegistrationOpen && 
@@ -120,7 +126,7 @@ export default function ParticipantsList() {
                                 ${!isWithinLimit ? "disabled" : ""}
                             `}
                         >
-                            <span className="participant-id">{participant.id}</span>
+                            <span className="participant-id">{participantNumber}</span>
                             <span className="participant-name">{participant.fullName}</span>
                             {showPaymentButton && (
                                 <button 
