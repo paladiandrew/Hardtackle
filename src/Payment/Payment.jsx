@@ -269,9 +269,6 @@ export default function Payment() {
                                                 {participant.code}
                                             </button>
                                         )}
-                                        {isCurrentUserParticipant(participant.tgId) && (
-                                            <span className="payment-code-text">{participant.code}</span>
-                                        )}
                                     </div>
                                 </div>
                             ))}
