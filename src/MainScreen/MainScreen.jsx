@@ -19,8 +19,10 @@ export default function MainScreen() {
          .then(blob => {
                 const url = URL.createObjectURL(blob);
                 document.querySelector('.fisrt-page-background-image').style.backgroundImage = `url(${url})`;
+                console.log(url);
             });
     }, []);
+    
     const checkCodeAndNavigate = async () => {
         if (pinCode) {
             try {
