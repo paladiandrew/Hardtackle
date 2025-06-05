@@ -10,19 +10,14 @@ export default function Payment() {
     const [participants, setParticipants] = useState([]);
     const [paidParticipants, setPaidParticipants] = useState([]);
     const [selectedParticipant, setSelectedParticipant] = useState(null);
-    const [maxQuantity, setMaxQuantity] = useState(0);
     const [showUnregisterConfirm, setShowUnregisterConfirm] = useState(false);
     const [participantToUnregister, setParticipantToUnregister] = useState(null);
+    const [maxAllowedUserId, setMaxAllowedUserId] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Загружаем данные турнира
-                const tournamentResponse = await fetch("https://htcupbackend.ru/api/tournaments/current");
-                const tournamentData = await tournamentResponse.json();
-                setMaxQuantity(tournamentData.maxQuantity || 0);
-
                 // Загружаем участников для оплаты
                 const participantsResponse = await fetch(`https://htcupbackend.ru/api/payment/participants?tgId=${tgId}`);
                 const participantsData = await participantsResponse.json();
@@ -33,6 +28,9 @@ export default function Payment() {
                 const paidResponse = await fetch(`https://htcupbackend.ru/api/payment/paid-participants?tgId=${tgId}`);
                 const paidData = await paidResponse.json();
                 setPaidParticipants(paidData);
+
+                const { maxAllowedUserId } = await maxIdResponse.json();
+                setMaxAllowedUserId(maxAllowedUserId);
             } catch (error) {
                 setError(error.message || "Ошибка загрузки данных");
             }
@@ -132,9 +130,9 @@ export default function Payment() {
             });
     };
 
-    // Фильтруем участников по maxQuantity
-    const filteredParticipants = participants.filter(participant => participant.id <= maxQuantity);
-    const filteredPaidParticipants = paidParticipants.filter(participant => participant.id <= maxQuantity);
+    // Фильтруем участников по maxAllowedUserId
+    const filteredParticipants = participants.filter(participant => participant.id <= maxAllowedUserId);
+    const filteredPaidParticipants = paidParticipants.filter(participant => participant.id <= maxAllowedUserId);
 
     // Проверяем, является ли текущий пользователь участником
     const isCurrentUserParticipant = (participantTgId) => {
