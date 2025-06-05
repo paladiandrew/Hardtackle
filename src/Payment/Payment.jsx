@@ -30,8 +30,8 @@ export default function Payment() {
                 setPaidParticipants(paidData);
 
                 const maxIdResponse = await fetch("https://htcupbackend.ru/api/tournaments/max-allowed-user-id");
-                const { maxAllowedUserId } = await maxIdResponse.json();
-                setMaxAllowedUserId(maxAllowedUserId);
+                const maxAllowedUserId = await maxIdResponse.json();
+                setMaxAllowedUserId(maxAllowedUserId.maxAllowedUserId);
             } catch (error) {
                 setError(error.message || "Ошибка загрузки данных");
             }
