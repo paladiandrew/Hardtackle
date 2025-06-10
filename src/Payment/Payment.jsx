@@ -132,8 +132,10 @@ export default function Payment() {
     };
 
     // Фильтруем участников по maxAllowedUserId
-    const filteredParticipants = participants.filter(participant => participant.id <= maxAllowedUserId);
-    const filteredPaidParticipants = paidParticipants.filter(participant => participant.id <= maxAllowedUserId);
+    const filteredParticipants = participants.filter(participant => 
+  Number(participant.id) <= Number(maxAllowedUserId));
+    const filteredPaidParticipants = paidParticipants.filter(participant => 
+  Number(participant.id) <= Number(maxAllowedUserId));
 
     // Проверяем, является ли текущий пользователь участником
     const isCurrentUserParticipant = (participantTgId) => {
