@@ -31,6 +31,7 @@ export default function Payment() {
 
                 const maxIdResponse = await fetch("https://htcupbackend.ru/api/max-allowed-user-id");
                 const maxAllowedUserId = await maxIdResponse.json();
+                console.log(maxAllowedUserId.maxAllowedUserId);
                 setMaxAllowedUserId(maxAllowedUserId.maxAllowedUserId);
             } catch (error) {
                 setError(error.message || "Ошибка загрузки данных");

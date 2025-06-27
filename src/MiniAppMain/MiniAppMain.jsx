@@ -96,7 +96,7 @@ export default function MiniAppMain() {
                     onClick={() => tournamentStatus.exists && hasAnyParticipants && navigateWithState("/payment")}
                     disabled={!tournamentStatus.exists || !hasAnyParticipants}
                 >
-                    Оплата
+                    Личный кабинет
                 </button>
             </div>
         </div>
